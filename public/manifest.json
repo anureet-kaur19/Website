@@ -1,11 +1,17 @@
 {
+<<<<<<< HEAD
   "short_name": "React App",
   "name": "Create React App Sample",
+=======
+  "short_name": "BLK Design System React",
+  "name": "BLK Design System React by Creative Tim",
+>>>>>>> Landing page
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+<<<<<<< HEAD
     },
     {
       "src": "logo192.png",
@@ -19,6 +25,11 @@
     }
   ],
   "start_url": ".",
+=======
+    }
+  ],
+  "start_url": "./index.html",
+>>>>>>> Landing page
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
