@@ -1,13 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import './assets/css/nucleo-icons.css';
-import './assets/scss/blk-design-system-react.scss?v=1.1.0';
-import './assets/scss/font-awesome.scss';
-import App from './App'
+import React from "react";
+import ReactDOM from "react-dom";
+import { StateInspector } from "reinspect";
+import App from "./App";
+import './index.css';
+import './assets/sass/theme.scss';
 
-ReactDOM.render(
-    <React.StrictMode>
+let MountedApp = (
+  <React.StrictMode>
     <App />
-    </React.StrictMode>,
-    document.getElementById('root'),
+  </React.StrictMode>
 );
+
+if (process.env.NODE_ENV === "development") {
+  MountedApp = (
+    <StateInspector name="App">
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </StateInspector>
+  );
+}
+
+ReactDOM.render(MountedApp, document.getElementById("root"));

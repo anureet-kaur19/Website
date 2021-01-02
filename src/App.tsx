@@ -1,20 +1,34 @@
-import React from 'react';
-import { BrowserRouter, useRoutes } from 'react-router-dom';
-import Home from './Views/Home';
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ContextProvider } from "./context";
+import { ToastContainer } from "react-toastify";
+import "./App.css";
+import { DashboardLayout } from "./components/Layout/Content";
+import routes from "./routes";
 
-const Routes = () => {
-    let element = useRoutes([
-        { path: '/', element: <Home /> },
-    ]);
+const App = () => {
 
-    return element;
+  return (
+    <Router>
+      <ContextProvider>
+        <DashboardLayout>
+          <Switch>
+            {routes.map((route, i) => (
+              <Route
+                path={route.path}
+                key={route.path + i}
+                component={route.component}
+                exact={true}
+              />
+            ))}
+          </Switch>
+        </DashboardLayout>
+      </ContextProvider>
+      <ToastContainer />
+    </Router>
+  );
 };
-
-function App() {
-    return (
-        <BrowserRouter children={<Routes />} />
-    );
-}
-
 
 export default App;

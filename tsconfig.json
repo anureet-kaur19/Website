@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "es2015",
     "lib": [
       "dom",
-      "dom.iterable"
+      "dom.iterable",
+      "es2015"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -16,22 +17,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react-jsx",
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"
-  ],
-  "rules": {
-    "no-string-throw": true,
-    "no-unused-expression": true,
-    "no-duplicate-variable": true,
-    "curly": true,
-    "class-name": true,
-    "semicolon": [
-      true,
-      "always"
-    ],
-    "triple-equals": true
-  },
-  "defaultSeverity": "warning"
+  ]
 }
