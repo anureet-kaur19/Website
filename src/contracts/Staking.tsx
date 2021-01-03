@@ -98,7 +98,7 @@ export class Staking {
   public async getContractConfig(): Promise<any> {
     try {
       let response = await this.contract.runQuery(this.proxyProvider, {
-        func: new ContractFunction("getTotalActiveStake"),
+        func: new ContractFunction("getContractConfig"),
         args: [],
       });
       console.log(response);
@@ -115,7 +115,7 @@ export class Staking {
   }
   public async delegate(amount: number): Promise<any> {
     let tx = this.contract.call({
-      func: new ContractFunction("transferToken"),
+      func: new ContractFunction("delegate"),
       value: Balance.eGLD(amount),
       gasLimit: new GasLimit(60000000),
     });
@@ -129,7 +129,7 @@ export class Staking {
       );
     }
     await this.userAccount.sync(this.proxyProvider);
-    tx.nonce = this.userAccount.nonce;
+    tx.setNonce(this.userAccount.nonce);
     switch (this.signerProvider.constructor) {
       case WalletProvider:
         return this.sendFundsWalletProvider(tx);
