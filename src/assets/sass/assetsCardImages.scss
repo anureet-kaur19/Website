@@ -1,0 +1,22 @@
+.assets-card {
+    &.total .card {
+      background: url('../images/total.png') center center no-repeat,
+        linear-gradient(153.43deg, #1233b2, #3464d0);
+    }
+  
+    &.available .card {
+      background: url('../images/available.png') center center no-repeat,
+        linear-gradient(153.43deg, #3585dd, #64adeb);
+    }
+  
+    &.delegated .card {
+      background: url('../images/delegated.png') center center no-repeat,
+        linear-gradient(153.43deg, #dfa365, #dfa365);
+    }
+
+    &.rewards .card {
+      background: url('../images/rewards.png') center center no-repeat,
+        linear-gradient(153.43deg, #209d67, #4bc197);
+    }
+  }
+  

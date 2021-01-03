@@ -1,5 +1,6 @@
 import React from "react";
 import BodyWrapper from "./BodyWrapper";
+import Footer from "./Footer";
 import { NavSidebar } from "./NavSidebar";
 
 //@ts-ignore
@@ -13,12 +14,13 @@ export const DashboardLayout = ({ children }) => {
             <section className="sm:flex-row flex flex-col flex-1">
               <div
                 className="content-box"
-                style={{ flexGrow: 2, flexBasis: "0%" }}
+                style={{ flexGrow: 3, flexBasis: "0%", padding: "50px"}}
               >
                 {children}
               </div>
             </section>
           </main>
+          <Footer />
         </div>
       </div>
     </BodyWrapper>

@@ -11,10 +11,10 @@ import (
 )
 
 func main() {
-	validatorPk, _ := erdgo.LoadPrivateKeyFromPemFile("pv.pem")
+	validatorPk, _ := erdgo.LoadPrivateKeyFromPemFile("pv2.pem")
 
-	address := "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqlllllskf06ky"
-	sig, _ := getStakeSig(address, "pv.pem")
+	address := "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqz8llllsh6u4jp"
+	sig, _ := getStakeSig(address, "pv2.pem")
 	publicKey, _ := getValidatorKeyFromPrivateKey(validatorPk)
 
 	fmt.Println(address)
