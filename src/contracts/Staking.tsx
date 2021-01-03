@@ -12,15 +12,9 @@ import {
   GasLimit,
   Balance,
 } from "@elrondnetwork/erdjs";
-
-// import {
-//   AbiRegistry,
-//   Namespace
-// } from "@elrondnetwork/erdjs/out/smartcontracts/typesystem";
 import { BinaryCodec } from "@elrondnetwork/erdjs/out/smartcontracts/codec";
 import { toast } from "react-toastify";
 import { setItem } from "../storage/session";
-// import abi from "./abi";
 import addresses from "./addresses";
 
 interface UserActiveStake {
@@ -95,34 +89,29 @@ export class Staking {
     }
   }
 
-  public async getContractConfig(): Promise<any> {
-    try {
-      let response = await this.contract.runQuery(this.proxyProvider, {
-        func: new ContractFunction("getContractConfig"),
-        args: [],
-      });
-      console.log(response);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }
-
   public async getUserData(): Promise<UserData> {
     await this.userAccount.sync(this.proxyProvider);
     return {
       balance: this.userAccount.balance.toString(),
     };
   }
-  public async delegate(amount: number): Promise<any> {
+
+  public async delegate(amount: number): Promise<void> {
     let tx = this.contract.call({
       func: new ContractFunction("delegate"),
       value: Balance.eGLD(amount),
       gasLimit: new GasLimit(60000000),
     });
     const result = await this.signTX(tx);
-    return result;
+    toast.success("Your delegation was sent!");
+    if(result) {
+      await result.awaitExecuted(this.proxyProvider);
+      toast.success("Your delegation was completed!");
+    } else {
+      toast.error("Your delegation request failed, please try again!");
+    }
   }
-  async signTX(tx: Transaction): Promise<boolean> {
+  async signTX(tx: Transaction): Promise<Transaction | undefined> {
     if (!this.signerProvider) {
       throw new Error(
         "You need a singer to send a transaction, use either WalletProvider or LedgerProvider"
@@ -138,23 +127,17 @@ export class Staking {
       default:
         toast.warn("Invalid signerProvider");
     }
-
-    return true;
   }
 
-  private async sendFundsWalletProvider(tx: Transaction): Promise<boolean> {
+  private async sendFundsWalletProvider(tx: Transaction): Promise<Transaction> {
     // Can use something like this to handle callback redirect
     setItem("transaction_identifier", true, 120);
     // @ts-ignore
-    await this.signerProvider.sendTransaction(tx);
-
-    return true;
+    return await this.signerProvider.sendTransaction(tx);
   }
 
-  private async sendFundsHWProvider(tx: Transaction): Promise<boolean> {
+  private async sendFundsHWProvider(tx: Transaction): Promise<Transaction> {
     // @ts-ignore
-    await this.signerProvider.sendTransaction(tx);
-
-    return true;
+    return await this.signerProvider.sendTransaction(tx);
   }
 }

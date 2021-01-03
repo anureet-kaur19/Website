@@ -18,7 +18,6 @@ import {
   MDBCard,
   MDBCardTitle,
   MDBCardText,
-  MDBContainer,
   MDBCardGroup,
 } from "mdbreact";
 import BigNumber from "bignumber.js";
@@ -34,7 +33,8 @@ const Staking = () => {
   const [modal, setModal] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
- async function fetchUserData() {
+  useEffect(() => { 
+    async function fetchUserData() {
       const userData = await staking.getUserData();
       setUserBalance(userData.balance);
       const result = await staking.getUserActiveStake();
@@ -45,13 +45,11 @@ const Staking = () => {
         if (rewardsAvailable) {
           setUserRewardAvailable(rewardsAvailable.rewardAmount);
         }
-        await staking.getContractConfig();
       }
       setLoaded(true);
     }
-  useEffect(() => {
     fetchUserData();
-  });
+  }, [staking]);
 
   const delegate = async () => {
     await staking.delegate(delegateAmount);
@@ -116,7 +114,6 @@ const Staking = () => {
       ];
 
   return (
-    <MDBContainer>
       <div className="justify-content-center">
         <MDBCardGroup deck>
           {entries.map(
@@ -204,7 +201,6 @@ const Staking = () => {
           </MDBCard>
         </MDBCardGroup>
       </div>
-    </MDBContainer>
   );
 };
 

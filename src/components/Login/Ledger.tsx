@@ -7,7 +7,7 @@ const LedgerLogin = () => {
   const dispatch = useDispatch();
 
   const handleOnClick = () => {
-    const httpProvider = new ProxyProvider("");
+    const httpProvider = new ProxyProvider("https://testnet-api.elrond.com", 4000);
     const hwWalletP = new HWProvider(httpProvider);
 
     dispatch({ type: "loading", loading: true });
