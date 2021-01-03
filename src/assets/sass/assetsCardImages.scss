@@ -1,22 +1,22 @@
-.assets-card {
-    &.total .card {
+.card-body {
+    &.total {
       background: url('../images/total.png') center center no-repeat,
-        linear-gradient(153.43deg, #1233b2, #3464d0);
+        linear-gradient(153.43deg, #1233b2, #3464d0) !important;
     }
   
-    &.available .card {
+    &.available {
       background: url('../images/available.png') center center no-repeat,
-        linear-gradient(153.43deg, #3585dd, #64adeb);
+        linear-gradient(153.43deg, #3585dd, #64adeb) !important;
     }
   
-    &.delegated .card {
+    &.delegated {
       background: url('../images/delegated.png') center center no-repeat,
-        linear-gradient(153.43deg, #dfa365, #dfa365);
+        linear-gradient(153.43deg, #dfa365, #dfa365) !important;
     }
 
-    &.rewards .card {
+    &.rewards {
       background: url('../images/rewards.png') center center no-repeat,
-        linear-gradient(153.43deg, #209d67, #4bc197);
+        linear-gradient(153.43deg, #209d67, #4bc197) ;
     }
   }
   

@@ -22,10 +22,11 @@
     "jquery": "^3.5.1",
     "mdbreact": "^5.0.1",
     "moment": "^2.29.1",
-    "node-sass": "^4",
+    "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
+    "react-chartjs-2": "^2.11.1",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
     "react-minimal-side-navigation": "^1.5.1",
@@ -40,7 +41,7 @@
     "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "HTTPS=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
