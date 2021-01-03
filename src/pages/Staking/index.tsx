@@ -33,26 +33,34 @@ const Staking = () => {
   const [modal, setModal] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => { 
-    async function fetchUserData() {
-      const userData = await staking.getUserData();
-      setUserBalance(userData.balance);
-      const result = await staking.getUserActiveStake();
-      setIsActive(result.isActive);
-      if (result.isActive && result.stakeAmount) {
-        setUserStakedBalance(result.stakeAmount);
-        const rewardsAvailable = await staking.getClaimableRewards();
-        if (rewardsAvailable) {
-          setUserRewardAvailable(rewardsAvailable.rewardAmount);
-        }
+  const updateUserData = async () => {
+    setLoaded(false);
+    const userData = await staking.getUserData();
+    setUserBalance(userData.balance);
+    const result = await staking.getUserActiveStake();
+    setIsActive(result.isActive);
+    await staking.getContractConfig();
+    if (result.isActive && result.stakeAmount) {
+      setUserStakedBalance(result.stakeAmount);
+      const rewardsAvailable = await staking.getClaimableRewards();
+      if (rewardsAvailable) {
+        setUserRewardAvailable(rewardsAvailable.rewardAmount);
       }
-      setLoaded(true);
+    }
+    setLoaded(true);
+  };
+
+  useEffect(() => {
+    async function fetchUserData() {
+      await updateUserData();
     }
     fetchUserData();
-  }, [staking]);
+  }, []);
 
   const delegate = async () => {
     await staking.delegate(delegateAmount);
+    setModal(false);
+    setDelegateAmount(10);
   };
 
   if (!loaded) {
@@ -114,93 +122,98 @@ const Staking = () => {
       ];
 
   return (
-      <div className="justify-content-center">
-        <MDBCardGroup deck>
-          {entries.map(
-            (
-              { label, value, icon, className, dataTestId, showDecimals },
-              index
-            ) => (
-              <AssetsCard
-                key={index}
-                icon={icon}
-                showDecimals={showDecimals}
-                dataTestId={dataTestId}
-                className={className}
-                label={label}
-                value={value.toString()}
-              />
-            )
-          )}
-        </MDBCardGroup>
-        <MDBCardGroup deck>
-          <MDBCard
-            className="card-body"
-            style={{ width: "22rem", padding: "15px", marginTop: "1rem" }}
-          >
-            <MDBCardTitle>Delegate</MDBCardTitle>
-            <MDBCardText>
-              Delegate your tokens to secure the network and capture your share
-              of the rewards.
-            </MDBCardText>
-            <div className="flex-row">
-              <MDBBtn
-                onClick={() => {
-                  setModal(!modal);
-                }}
-              >
-                Delegate
-              </MDBBtn>
-              {/* @ts-ignore */}
-              <MDBModal
-                isOpen={modal}
+    <div className="justify-content-center">
+      <MDBCardGroup deck>
+        {entries.map(
+          (
+            { label, value, icon, className, dataTestId, showDecimals },
+            index
+          ) => (
+            <AssetsCard
+              key={index}
+              icon={icon}
+              showDecimals={showDecimals}
+              dataTestId={dataTestId}
+              className={className}
+              label={label}
+              value={value.toString()}
+            />
+          )
+        )}
+      </MDBCardGroup>
+      <MDBCardGroup deck>
+        <MDBCard
+          className="card-body"
+          style={{ width: "22rem", padding: "15px", marginTop: "1rem" }}
+        >
+          <MDBCardTitle>Delegate</MDBCardTitle>
+          <MDBCardText>
+            Delegate your tokens to secure the network and capture your share of
+            the rewards.
+          </MDBCardText>
+          <div className="flex-row">
+            <MDBBtn
+              onClick={() => {
+                setModal(!modal);
+              }}
+            >
+              Delegate
+            </MDBBtn>
+            {/* @ts-ignore */}
+            <MDBModal
+              isOpen={modal}
+              toggle={() => {
+                setModal(!modal);
+              }}
+              centered
+              animation={"top"}
+              autoFocus={true}
+            >
+              <MDBModalHeader
                 toggle={() => {
                   setModal(!modal);
                 }}
-                centered
-                animation={"top"}
-                autoFocus={true}
               >
-                <MDBModalHeader
-                  toggle={() => {
+                Delegate Now
+              </MDBModalHeader>
+              <MDBModalBody>
+                <label htmlFor="amount" className="grey-text">
+                  Amount
+                </label>
+                <MDBInput
+                  min={10}
+                  value={delegateAmount}
+                  onChange={(e) => {
+                    /* @ts-ignore */
+                    setDelegateAmount(e.target.value);
+                  }}
+                  type="number"
+                  id="amount"
+                />
+              </MDBModalBody>
+              <MDBModalFooter>
+                <MDBBtn
+                  color="warning"
+                  onClick={() => {
                     setModal(!modal);
                   }}
                 >
-                  Delegate Now
-                </MDBModalHeader>
-                <MDBModalBody>
-                  <label htmlFor="amount" className="grey-text">
-                    Amount
-                  </label>
-                  <MDBInput
-                    min={10}
-                    value={delegateAmount}
-                    onChange={(e) => {
-                      /* @ts-ignore */
-                      setDelegateAmount(e.target.value);
-                    }}
-                    type="number"
-                    id="amount"
-                  />
-                </MDBModalBody>
-                <MDBModalFooter>
-                  <MDBBtn
-                    color="warning"
-                    onClick={() => {
-                      setModal(!modal);
-                    }}
-                  >
-                    Close
-                  </MDBBtn>
-                  <MDBBtn color="success" onClick={() => {
+                  Close
+                </MDBBtn>
+                <MDBBtn
+                  color="success"
+                  onClick={() => {
                     delegate();
-                  }}>Send</MDBBtn>
-                </MDBModalFooter>
-              </MDBModal>
-            </div>
-          </MDBCard>
-        </MDBCardGroup>
-      </div>
+                  }}
+                >
+                  Send
+                </MDBBtn>
+              </MDBModalFooter>
+            </MDBModal>
+          </div>
+        </MDBCard>
+      </MDBCardGroup>
+    </div>
   );
 };
 

@@ -89,6 +89,28 @@ export class Staking {
     }
   }
 
+  public async getContractConfig(): Promise<any> {
+    try {
+      let response = await this.contract.runQuery(this.proxyProvider, {
+        func: new ContractFunction("getContractConfig")
+      });
+      console.log(response);
+      if (response.isSuccess()) {
+        if (response.returnData[0]) {
+          return {
+            rewardAmount: response.returnData[0].asNumber,
+          };
+        }
+      } else {
+        toast.error(
+          "Elrond API is not working please come back! FUND ARE SAFU"
+        );
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
   public async getUserData(): Promise<UserData> {
     await this.userAccount.sync(this.proxyProvider);
     return {
@@ -111,6 +133,7 @@ export class Staking {
       toast.error("Your delegation request failed, please try again!");
     }
   }
+
   async signTX(tx: Transaction): Promise<Transaction | undefined> {
     if (!this.signerProvider) {
       throw new Error(

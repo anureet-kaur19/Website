@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
 } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -13,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import { DashboardLayout } from "./components/Layout/Content";
 import routes from "./routes";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
@@ -44,7 +44,7 @@ const GuardedRoute = ({ component: Component, isProtected, ...rest }) => {
     if (loggedIn) {
       return <Route {...rest} render={props => <Component {...props} />} />;
     } else {
-      return <Redirect to={"/login"} />;
+      return <Login />;
     }
   } else {
     return <Route {...rest} render={props => <Component {...props} />} />;

@@ -4,7 +4,6 @@ import withPageTitle from "./components/PageTitle";
 import Lottery from "./pages/Lottery";
 import Staking from "./pages/Staking";
 import Stats from "./pages/Stats";
-import Login from "./pages/Login";
 
 interface RouteType {
   path: string;
@@ -37,12 +36,6 @@ const routes: RouteType[] = [
     title: "Stats",
     isProtected: false,
     component: Stats
-  },
-  {
-    path: "/login",
-    title: "Login",
-    isProtected: false,
-    component: Login
   }
 ];
 
