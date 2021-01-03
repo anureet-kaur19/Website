@@ -10,7 +10,7 @@ const Login = () => {
 
   const { loggedIn } = useContext();
   if (loggedIn) {
-    return <Redirect to={'/'} />
+    return <Redirect to={"/"} />;
   }
 
   return (

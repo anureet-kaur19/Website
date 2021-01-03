@@ -24,7 +24,6 @@ import abi from "./abi";
 import addresses from "./addresses";
 import { toast } from "react-toastify";
 
-
 export class Lottery {
   contract: SmartContract;
   proxyProvider: ProxyProvider;

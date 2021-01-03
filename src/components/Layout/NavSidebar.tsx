@@ -4,7 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Icon from "awesome-react-icons";
 import React, { useState } from "react";
 
-import { ReactComponent as Logo } from '../../assets/img/logo.svg';
+import { ReactComponent as Logo } from "../../assets/img/logo.svg";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 
 export const NavSidebar = () => {
@@ -40,7 +40,7 @@ export const NavSidebar = () => {
       >
         <div className="flex items-center justify-center mt-10 text-center py-6">
           <span className="mx-2 text-2xl font-semibold text-black">
-          <Logo />
+            <Logo />
           </span>
         </div>
 
@@ -58,12 +58,12 @@ export const NavSidebar = () => {
             {
               title: "Staking",
               itemId: "/staking",
-              elemBefore: () => <Icon name="power" />,
+              elemBefore: () => <Icon name="power" />
             },
             {
               title: "Lottery",
               itemId: "/lottery",
-              elemBefore: () => <Icon name="briefcase" />,
+              elemBefore: () => <Icon name="briefcase" />
             }
           ]}
         />

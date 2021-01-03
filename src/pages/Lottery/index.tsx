@@ -7,7 +7,7 @@ import Login from "../Login";
 const Lottery = () => {
   const { loggedIn, address } = useContext();
   if (!loggedIn) {
-    return <Login />
+    return <Login />;
   }
 
   return (

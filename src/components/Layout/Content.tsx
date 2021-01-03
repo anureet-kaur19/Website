@@ -14,7 +14,7 @@ export const DashboardLayout = ({ children }) => {
             <section className="sm:flex-row flex flex-col flex-1">
               <div
                 className="content-box"
-                style={{ flexGrow: 3, flexBasis: "0%", padding: "50px"}}
+                style={{ flexGrow: 3, flexBasis: "0%", padding: "50px" }}
               >
                 {children}
               </div>

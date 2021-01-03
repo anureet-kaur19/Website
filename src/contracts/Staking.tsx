@@ -24,10 +24,10 @@ import addresses from "./addresses";
 interface UserActiveStake {
   isActive: boolean;
   stakeAmount?: number;
-};
+}
 interface UserData {
   balance: string;
-};
+}
 export class Staking {
   contract: SmartContract;
   proxyProvider: ProxyProvider;
@@ -55,9 +55,11 @@ export class Staking {
         return {
           isActive: true,
           stakeAmount: response.returnData[0].asNumber
-        }
+        };
       } else {
-        toast.error('Elrond API is not working please come back! FUND ARE SAFU');
+        toast.error(
+          "Elrond API is not working please come back! FUND ARE SAFU"
+        );
         return {
           isActive: false
         };
@@ -65,7 +67,7 @@ export class Staking {
     } catch (error) {
       return {
         isActive: false
-      }
+      };
     }
   }
 
@@ -79,10 +81,12 @@ export class Staking {
         if (response.returnData[0]) {
           return {
             rewardAmount: response.returnData[0].asNumber
-          }
+          };
         }
       } else {
-        toast.error('Elrond API is not working please come back! FUND ARE SAFU');
+        toast.error(
+          "Elrond API is not working please come back! FUND ARE SAFU"
+        );
       }
     } catch (error) {
       toast.error(error.message);
@@ -103,7 +107,7 @@ export class Staking {
   public async getUserData(): Promise<UserData> {
     await this.userAccount.sync(this.proxyProvider);
     return {
-      balance: this.userAccount.balance.toString(),
+      balance: this.userAccount.balance.toString()
     };
   }
 
