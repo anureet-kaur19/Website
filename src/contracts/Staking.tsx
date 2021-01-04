@@ -90,25 +90,11 @@ export class Staking {
   }
 
   public async getContractConfig(): Promise<any> {
-    try {
-      let response = await this.contract.runQuery(this.proxyProvider, {
-        func: new ContractFunction("getContractConfig")
-      });
-      console.log(response);
-      if (response.isSuccess()) {
-        if (response.returnData[0]) {
-          return {
-            rewardAmount: response.returnData[0].asNumber,
-          };
-        }
-      } else {
-        toast.error(
-          "Elrond API is not working please come back! FUND ARE SAFU"
-        );
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
+    // let response = await this.contract.runQuery(this.proxyProvider, {
+    //     func: new ContractFunction("getContractConfig"),
+    //   });
+    //   console.log(response);
+   
   }
 
   public async getUserData(): Promise<UserData> {

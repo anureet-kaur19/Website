@@ -28,7 +28,7 @@ export const initialState = () => {
     dapp: {
       provider: new WalletProvider(WALLET_PROVIDER_TESTNET),
       //provider: new WalletProvider("https://localhost:3000/dapp/init"),
-      proxy: new ProxyProvider("http://144.91.109.166:8079", 4000)
+      proxy: new ProxyProvider("https://testnet-gateway.elrond.com", 4000)
     },
     loading: false,
     error: "",
