@@ -5,45 +5,75 @@ export type DispatchType = (action: ActionType) => void;
 
 export type ActionType =
   | { type: "login"; address: StateType["address"] }
+  | { type: "loginType"; loginType: StateType["loginType"] }
+  | { type: "PEM"; PEM: StateType["PEM"] }
+  | { type: "JSON"; JSONText: StateType["JSONText"] }
   | { type: "logout" }
   | { type: "loading"; loading: StateType["loading"] }
-  | { type: "setProvider"; provider: StateType["dapp"]["provider"] };
+  | { type: "setWallet"; wallet: StateType["wallet"] };
 
 export function reducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
     case "login": {
       const { address } = action;
       setItem("logged_in", true);
+      setItem("forceLogout", false);
       setItem("address", address);
       return {
         ...state,
         address,
-        loggedIn: true
+        forceLogout: false,
+        loggedIn: true,
       };
     }
 
+    case "loginType": {
+      const { loginType } = action;
+      setItem("loginType", loginType);
+      return {
+        ...state,
+        loginType,
+      };
+    }
+
+    case "PEM": {
+      const { PEM } = action;
+      setItem("PEM", PEM);
+      return {
+        ...state,
+        PEM,
+      };
+    }
+    case "JSON": {
+      const { JSONText } = action;
+      setItem("JSON", JSONText);
+      return {
+        ...state,
+        JSONText,
+      };
+    }
     case "loading": {
       const { loading } = action;
       return {
         ...state,
-        loading
+        loading,
       };
     }
 
-    case "setProvider": {
-      const { provider } = action;
+    case "setWallet": {
+      const { wallet } = action;
       return {
         ...state,
-        dapp: {
-          ...state.dapp,
-          provider: provider
-        }
+        wallet,
       };
     }
-
     case "logout": {
-      removeItem("logged_in");
+      setItem("logged_in", false);
+      setItem("forceLogout", true);
       removeItem("address");
+      removeItem("PEM");
+      removeItem("JSON");
+      removeItem("loginType");
       return initialState();
     }
 

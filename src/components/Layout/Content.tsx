@@ -1,28 +1,238 @@
 import React from "react";
-import BodyWrapper from "./BodyWrapper";
-import Footer from "./Footer";
-import { NavSidebar } from "./NavSidebar";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import RedirectTo from "@material-ui/core/Link";
+import Container from "@material-ui/core/Container";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { ReactComponent as Logo } from "../../assets/img/logo.svg";
+import { Link } from "react-router-dom";
+import LayersIcon from "@material-ui/icons/Layers";
+import HomeIcon from "@material-ui/icons/Home";
+import { useContext, useDispatch } from "../../context";
+import { Box } from "@material-ui/core";
 
-//@ts-ignore
-export const DashboardLayout = ({ children }) => {
+function Copyright() {
   return (
-    <BodyWrapper>
-      <div className="flex h-screen bg-gray-200">
-        <NavSidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <main className="content">
-            <section className="sm:flex-row flex flex-col flex-1">
-              <div
-                className="content-box"
-                style={{ flexGrow: 3, flexBasis: "0%", padding: "50px" }}
-              >
-                {children}
-              </div>
-            </section>
-          </main>
-          <Footer />
-        </div>
-      </div>
-    </BodyWrapper>
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <RedirectTo color="inherit" href="https://truststaking.com/">
+        Trust Staking
+      </RedirectTo>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
   );
-};
+}
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
+    ...theme.mixins.toolbar,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: "none",
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawerPaper: {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: "hidden",
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up("sm")]: {
+      width: theme.spacing(9),
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: "100vh",
+    overflow: "auto",
+    flexDirection: "column",
+    minHeight: "100vh",
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+    minHeight: "86vh",
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+  },
+  fixedHeight: {
+    height: 240,
+  },
+  main: {
+    marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(2),
+  },
+  footer: {
+    padding: theme.spacing(3, 2),
+    marginTop: "auto",
+    flexGrow: 1,
+    overflow: "auto",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[200]
+        : theme.palette.grey[800],
+  },
+}));
+
+// @ts-ignore
+export default function Dashboard({ children }) {
+  const classes = useStyles();
+  const { loggedIn } = useContext();
+  const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(true);
+  
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  
+  const logout = () => {
+    dispatch({ type: "logout" });
+  };
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
+        <Toolbar className={classes.toolbar}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden
+            )}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            Trust Staking
+          </Typography>
+          {loggedIn && (
+            <IconButton color="inherit" onClick={() => {logout();}}>
+                <ExitToAppIcon />
+            </IconButton>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+        {open ? <Box textAlign="center"><Logo /></Box> : null}
+        <Divider />
+        <List>{mainListItems}</List>
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          {children}
+        </Container>
+        <footer className={classes.footer}>
+          <Container maxWidth="sm">
+            <Copyright />
+          </Container>
+        </footer>
+      </main>
+    </div>
+  );
+}
+export const mainListItems = (
+  <div>
+    <ListItem button component={Link} to={"/"}>
+      <ListItemIcon>
+        <HomeIcon />
+      </ListItemIcon>
+      <ListItemText primary="Home" onClick={() => {}} />
+    </ListItem>
+    <ListItem button component={Link} to={"/staking"}>
+      <ListItemIcon>
+        <LayersIcon />
+      </ListItemIcon>
+      <ListItemText primary="Staking" />
+    </ListItem>
+  </div>
+);

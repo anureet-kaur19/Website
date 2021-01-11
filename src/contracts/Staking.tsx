@@ -1,65 +1,58 @@
+import { Argument, Balance } from "@elrondnetwork/erdjs";
 import {
-  SmartContract,
-  Address,
   ProxyProvider,
-  Transaction,
-  IDappProvider,
-  WalletProvider,
-  HWProvider,
-  ContractFunction,
-  Argument,
-  Account,
-  GasLimit,
-  Balance,
-} from "@elrondnetwork/erdjs";
-import { BinaryCodec } from "@elrondnetwork/erdjs/out/smartcontracts/codec";
+  Wallet,
+  Contract,
+  addressToHexString,
+  ContractQueryResultDataType,
+  parseQueryResult,
+  TransactionReceipt,
+} from "elrondjs";
+import { BigVal } from 'bigval'
 import { toast } from "react-toastify";
-import { setItem } from "../storage/session";
 import addresses from "./addresses";
 
-interface UserActiveStake {
-  isActive: boolean;
-  stakeAmount?: number;
-}
 interface UserData {
   balance: string;
 }
 export class Staking {
-  contract: SmartContract;
   proxyProvider: ProxyProvider;
-  signerProvider?: IDappProvider;
-  userAccount: Account;
-  userAddress: Address;
-  codec = new BinaryCodec();
+  signerProvider: Wallet;
+  private userWalletBech32: string = "";
 
-  constructor(wallet: string, provider: ProxyProvider, signer?: IDappProvider) {
-    const address = new Address(addresses["stakingSC"]);
-    this.contract = new SmartContract({ address });
-    this.userAddress = new Address(wallet);
-    this.userAccount = new Account(this.userAddress);
-    this.proxyProvider = provider;
-    this.signerProvider = signer;
+  constructor(walletSigner?: Wallet, provider?: ProxyProvider) {
+    this.signerProvider = walletSigner as Wallet;
+    this.proxyProvider = provider as ProxyProvider;
   }
 
-  public async getUserActiveStake(): Promise<UserActiveStake> {
+  public setWalletSigner(walletSigner: Wallet) {
+    this.signerProvider = walletSigner;
+  }
+
+  public setUserAddress(wallet: string) {
+    this.userWalletBech32 = wallet;
+  }
+
+  public setProxyProvider(provider: ProxyProvider) {
+    this.proxyProvider = provider;
+  }
+
+  public async getUserActiveStake(): Promise<any> {
     try {
-      let response = await this.contract.runQuery(this.proxyProvider, {
-        func: new ContractFunction("getUserActiveStake"),
-        args: [Argument.fromPubkey(this.userAddress)],
+      const contract = await Contract.at(addresses["stakingSC"], {
+        provider: this.proxyProvider,
       });
-      if (response.isSuccess()) {
-        return {
-          isActive: true,
-          stakeAmount: response.returnData[0].asNumber,
-        };
-      } else {
-        toast.error(
-          "Elrond API is not working please come back! FUND ARE SAFU"
-        );
-        return {
-          isActive: false,
-        };
-      }
+      let response = await contract.query("getUserActiveStake", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+      const waitingStake = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.INT,
+      });
+      return {
+        isActive: true,
+        stakeAmount: BigInt(waitingStake).toString(),
+      };
     } catch (error) {
       return {
         isActive: false,
@@ -69,84 +62,65 @@ export class Staking {
 
   public async getClaimableRewards(): Promise<any> {
     try {
-      let response = await this.contract.runQuery(this.proxyProvider, {
-        func: new ContractFunction("getClaimableRewards"),
-        args: [Argument.fromPubkey(this.userAddress)],
+      const contract = await Contract.at(addresses["stakingSC"], {
+        provider: this.proxyProvider,
       });
-      if (response.isSuccess()) {
-        if (response.returnData[0]) {
-          return {
-            rewardAmount: response.returnData[0].asNumber,
-          };
-        }
-      } else {
-        toast.error(
-          "Elrond API is not working please come back! FUND ARE SAFU"
-        );
-      }
+      let response = await contract.query("getClaimableRewards", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+      const rewardBalance = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.INT,
+      });
+      return {
+        rewardAmount: BigInt(rewardBalance).toString(),
+      };
     } catch (error) {
       toast.error(error.message);
     }
+    return undefined;
   }
 
-  public async getContractConfig(): Promise<any> {
-    // let response = await this.contract.runQuery(this.proxyProvider, {
-    //     func: new ContractFunction("getContractConfig"),
-    //   });
-    //   console.log(response);
-   
-  }
+  // public async getContractConfig(): Promise<any> {
+  //   let response = await this.contract.runQuery(this.proxyProvider, {
+  //       func: new ContractFunction("getContractConfig"),
+  //     });
+  //     console.log(response);
+
+  // }
 
   public async getUserData(): Promise<UserData> {
-    await this.userAccount.sync(this.proxyProvider);
-    return {
-      balance: this.userAccount.balance.toString(),
-    };
+    const balance = await this.proxyProvider.getAddress('erd1x45vnu7shhecfz0v03qqfmy8srndch50cdx7m763p743tzlwah0sgzewlm');
+    console.log(balance);
+    return balance;
   }
 
-  public async delegate(amount: number): Promise<void> {
-    let tx = this.contract.call({
-      func: new ContractFunction("delegate"),
-      value: Balance.eGLD(amount),
-      gasLimit: new GasLimit(60000000),
+  public async delegate(amount: number): Promise<TransactionReceipt> {
+    const contract = await Contract.at(addresses["stakingSC"], {
+      provider: this.proxyProvider,
+      signer: this.signerProvider,
+      sender: this.userWalletBech32,
+      gasLimit: 12000000,
     });
-    const result = await this.signTX(tx);
-    toast.success("Your delegation was sent!");
-    if(result) {
-      await result.awaitExecuted(this.proxyProvider);
-      toast.success("Your delegation was completed!");
-    } else {
-      toast.error("Your delegation request failed, please try again!");
-    }
+
+    let tx = contract.invoke("delegate", [], {
+      value: new BigVal(Balance.eGLD(amount).valueOf())
+    });
+
+    return tx;
   }
 
-  async signTX(tx: Transaction): Promise<Transaction | undefined> {
-    if (!this.signerProvider) {
-      throw new Error(
-        "You need a singer to send a transaction, use either WalletProvider or LedgerProvider"
-      );
-    }
-    await this.userAccount.sync(this.proxyProvider);
-    tx.setNonce(this.userAccount.nonce);
-    switch (this.signerProvider.constructor) {
-      case WalletProvider:
-        return this.sendFundsWalletProvider(tx);
-      case HWProvider:
-        return this.sendFundsHWProvider(tx);
-      default:
-        toast.warn("Invalid signerProvider");
-    }
-  }
-
-  private async sendFundsWalletProvider(tx: Transaction): Promise<Transaction> {
-    // Can use something like this to handle callback redirect
-    setItem("transaction_identifier", true, 120);
-    // @ts-ignore
-    return await this.signerProvider.sendTransaction(tx);
-  }
-
-  private async sendFundsHWProvider(tx: Transaction): Promise<Transaction> {
-    // @ts-ignore
-    return await this.signerProvider.sendTransaction(tx);
+  public async unDelegate(amount: number): Promise<TransactionReceipt> {
+    console.log(amount);
+    const contract = await Contract.at(addresses["stakingSC"], {
+      provider: this.proxyProvider,
+      signer: this.signerProvider,
+      sender: this.userWalletBech32,
+      gasLimit: 12000000,
+    });
+    let tx = contract.invoke("unDelegate", [
+      Argument.fromBigInt(Balance.eGLD(amount).valueOf()).valueOf(),
+    ]);
+    return tx;
   }
 }

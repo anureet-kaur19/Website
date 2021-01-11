@@ -2,13 +2,9 @@ import React from "react";
 
 import { useContext } from "../../context";
 import { addresses } from "../../contracts";
-import Login from "../Login";
 
 const Lottery = () => {
-  const { loggedIn, address } = useContext();
-  if (!loggedIn) {
-    return <Login />;
-  }
+  const { address } = useContext();
 
   return (
     <div className="container py-4">

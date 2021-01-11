@@ -1,85 +1,82 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   faBookOpen,
   faCheck,
   faMoneyCheck,
   faWonSign,
 } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
-import { useContext } from "../../context";
-import { Staking as SC } from "../../contracts/Staking";
-import AssetsCard from "./AssetCards";
-import {
-  MDBInput,
-  MDBBtn,
-  MDBModal,
-  MDBModalBody,
-  MDBModalHeader,
-  MDBModalFooter,
-  MDBCard,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardGroup,
-} from "mdbreact";
+import React, { useState, useCallback } from "react";
+import { useStakingContext } from "../../context/Staking";
+// import AssetsCard from "./AssetCards";
+import { useTransactionToasts } from "react-transaction-toasts";
+// import {
+//   MDBInput,
+//   MDBBtn,
+//   MDBModal,
+//   MDBModalBody,
+//   MDBModalHeader,
+//   MDBModalFooter,
+//   MDBCard,
+//   MDBCardTitle,
+//   MDBCardText,
+//   MDBCardGroup,
+// } from "mdbreact";
 import BigNumber from "bignumber.js";
+import { useContext } from "../../context";
 
 const Staking = () => {
-  const { address, dapp } = useContext();
-  const staking = useState(new SC(address, dapp.proxy, dapp.provider))[0];
-  const [isActive, setIsActive] = useState(false);
-  const [userStakedBalance, setUserStakedBalance] = useState(0);
-  const [userRewardsAvailable, setUserRewardAvailable] = useState(0);
+  const {
+    balance,
+    delegateBalance,
+    rewardBalance,
+    isActive,
+    stakingSC,
+  } = useStakingContext();
+  const { provider, address } = useContext();
+  const { trackTransaction, showError } = useTransactionToasts();
   const [delegateAmount, setDelegateAmount] = useState(10);
-  const [userBalance, setUserBalance] = useState("0");
+  const [unDelegateAmount, setUnDelegateAmount] = useState(10);
   const [modal, setModal] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [modalUnDelegate, setModalUnDelegate] = useState(false);
 
-  const updateUserData = async () => {
-    setLoaded(false);
-    const userData = await staking.getUserData();
-    setUserBalance(userData.balance);
-    const result = await staking.getUserActiveStake();
-    setIsActive(result.isActive);
-    await staking.getContractConfig();
-    if (result.isActive && result.stakeAmount) {
-      setUserStakedBalance(result.stakeAmount);
-      const rewardsAvailable = await staking.getClaimableRewards();
-      if (rewardsAvailable) {
-        setUserRewardAvailable(rewardsAvailable.rewardAmount);
-      }
+  //@ts-ignore
+  const delegate = useCallback(async () => {
+    try {
+      const tx = await stakingSC.delegate(delegateAmount);
+      trackTransaction(tx.hash);
+    } catch (error) {
+      showError(error.message);
+    } finally {
+      setModal(false);
+      setDelegateAmount(10);
     }
-    setLoaded(true);
-  };
+  });
 
-  useEffect(() => {
-    async function fetchUserData() {
-      await updateUserData();
+  //@ts-ignore
+  const unDelegate = useCallback(async () => {
+ try {
+      const tx = await stakingSC.unDelegate(delegateAmount);
+      trackTransaction(tx.hash);
+    } catch (error) {
+      showError(error.message);
+    } finally {
+      setModalUnDelegate(false);
+      setUnDelegateAmount(11);
     }
-    fetchUserData();
-  }, []);
+  });
 
-  const delegate = async () => {
-    await staking.delegate(delegateAmount);
-    setModal(false);
-    setDelegateAmount(10);
-  };
-
-  if (!loaded) {
-    return null;
-  }
-  const bnBalance = new BigNumber(userBalance);
-  const bnDelegated = new BigNumber(userStakedBalance);
-  const bnRewards = new BigNumber(userRewardsAvailable);
+  const bnBalance = new BigNumber(balance.toString());
 
   const total = bnBalance
-    .plus(bnDelegated)
-    .plus(bnRewards)
+    .plus(delegateBalance)
+    .plus(rewardBalance)
     .toString(10);
 
   const entries = isActive
     ? [
         {
           label: "Total",
-          value: !isNaN(parseFloat(total)) ? total : userBalance,
+          value: !isNaN(parseFloat(total)) ? total : balance,
           showDecimals: true,
           icon: faMoneyCheck,
           className: "total",
@@ -87,7 +84,7 @@ const Staking = () => {
         },
         {
           label: "Available",
-          value: userBalance,
+          value: balance,
           icon: faCheck,
           showDecimals: true,
           className: "available",
@@ -95,7 +92,7 @@ const Staking = () => {
         },
         {
           label: "Delegated",
-          value: bnDelegated,
+          value: delegateBalance,
           icon: faBookOpen,
           showDecimals: true,
           className: "delegated",
@@ -103,7 +100,7 @@ const Staking = () => {
         },
         {
           label: "Reward",
-          value: bnRewards,
+          value: rewardBalance,
           icon: faWonSign,
           showDecimals: true,
           className: "rewards",
@@ -113,7 +110,7 @@ const Staking = () => {
     : [
         {
           label: "Available",
-          value: userBalance,
+          value: balance,
           icon: faMoneyCheck,
           showDecimals: true,
           className: "total",
@@ -123,97 +120,8 @@ const Staking = () => {
 
   return (
     <div className="justify-content-center">
-      <MDBCardGroup deck>
-        {entries.map(
-          (
-            { label, value, icon, className, dataTestId, showDecimals },
-            index
-          ) => (
-            <AssetsCard
-              key={index}
-              icon={icon}
-              showDecimals={showDecimals}
-              dataTestId={dataTestId}
-              className={className}
-              label={label}
-              value={value.toString()}
-            />
-          )
-        )}
-      </MDBCardGroup>
-      <MDBCardGroup deck>
-        <MDBCard
-          className="card-body"
-          style={{ width: "22rem", padding: "15px", marginTop: "1rem" }}
-        >
-          <MDBCardTitle>Delegate</MDBCardTitle>
-          <MDBCardText>
-            Delegate your tokens to secure the network and capture your share of
-            the rewards.
-          </MDBCardText>
-          <div className="flex-row">
-            <MDBBtn
-              onClick={() => {
-                setModal(!modal);
-              }}
-            >
-              Delegate
-            </MDBBtn>
-            {/* @ts-ignore */}
-            <MDBModal
-              isOpen={modal}
-              toggle={() => {
-                setModal(!modal);
-              }}
-              centered
-              animation={"top"}
-              autoFocus={true}
-            >
-              <MDBModalHeader
-                toggle={() => {
-                  setModal(!modal);
-                }}
-              >
-                Delegate Now
-              </MDBModalHeader>
-              <MDBModalBody>
-                <label htmlFor="amount" className="grey-text">
-                  Amount
-                </label>
-                <MDBInput
-                  min={10}
-                  value={delegateAmount}
-                  onChange={(e) => {
-                    /* @ts-ignore */
-                    setDelegateAmount(e.target.value);
-                  }}
-                  type="number"
-                  id="amount"
-                />
-              </MDBModalBody>
-              <MDBModalFooter>
-                <MDBBtn
-                  color="warning"
-                  onClick={() => {
-                    setModal(!modal);
-                  }}
-                >
-                  Close
-                </MDBBtn>
-                <MDBBtn
-                  color="success"
-                  onClick={() => {
-                    delegate();
-                  }}
-                >
-                  Send
-                </MDBBtn>
-              </MDBModalFooter>
-            </MDBModal>
-          </div>
-        </MDBCard>
-      </MDBCardGroup>
-    </div>
+      {address}
+  </div>
   );
 };
 

@@ -79,6 +79,7 @@ export class Lottery {
 
     return true;
   }
+
   private async sendFundsWalletProvider(): Promise<boolean> {
     const func = new ContractFunction("fund");
     let payload = TransactionPayload.contractCall()
@@ -99,6 +100,7 @@ export class Lottery {
 
     return true;
   }
+
   private async sendFundsHWProvider(): Promise<boolean> {
     const func = new ContractFunction("fund");
     let payload = TransactionPayload.contractCall()
