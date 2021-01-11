@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { StateType, initialState } from "./state";
 import { DispatchType, reducer } from "./reducer";
 import { BasicWallet, LedgerWallet } from "elrondjs";
-import { toast } from "react-toastify";
 import { Buffer } from "buffer";
 const TransportWebUsb = require("@ledgerhq/hw-transport-webusb").default;
 const TransportU2F = require("@ledgerhq/hw-transport-u2f").default;

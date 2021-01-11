@@ -8,7 +8,6 @@ import {
   Button,
   createStyles,
   FormControl,
-  FormGroup,
   IconButton,
   Input,
   InputAdornment,
