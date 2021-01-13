@@ -1,5 +1,5 @@
 import React from "react";
-import LedgerLogin from "../../components/Login/Ledger";
+import LedgerLogin from "../../components/Login";
 // import WalletLogin from "../../components/Login/Wallet";
 import "react-toastify/dist/ReactToastify.css";
 import { useContext } from "../../context";

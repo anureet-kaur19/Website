@@ -8,8 +8,8 @@ import {
   parseQueryResult,
   TransactionReceipt,
 } from "elrondjs";
-import { BigVal } from 'bigval'
 import { toast } from "react-toastify";
+import { BigVal } from 'bigval';
 import addresses from "./addresses";
 
 interface UserData {
@@ -90,7 +90,8 @@ export class Staking {
   // }
 
   public async getUserData(): Promise<UserData> {
-    const balance = await this.proxyProvider.getAddress('erd1x45vnu7shhecfz0v03qqfmy8srndch50cdx7m763p743tzlwah0sgzewlm');
+    console.log(this.proxyProvider);
+    const balance = await this.proxyProvider.getAddress(this.userWalletBech32);
     console.log(balance);
     return balance;
   }

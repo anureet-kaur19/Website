@@ -21,9 +21,9 @@ function StakingContextProvider({ children }: ContextType) {
     undefined
   );
 
+  //@ts-ignore
   useEffect(() => {
-    if (getItem("logged_in") === true && wallet !== undefined) {
-      const fetchUserData = async () => {
+    const fetchUserData = async () => {
         if (getItem("logged_in") === false) {
           if (interval !== undefined) {
             clearInterval(interval as NodeJS.Timeout);
@@ -31,9 +31,9 @@ function StakingContextProvider({ children }: ContextType) {
           }
           return;
         }
-        stakingSC.setProxyProvider(provider);
-        stakingSC.setWalletSigner(wallet as Wallet);
         stakingSC.setUserAddress(address);
+        stakingSC.setWalletSigner(wallet as Wallet);
+        stakingSC.setProxyProvider(provider);
         const userBalance = await stakingSC.getUserData();
         dispatch({ type: "setBalance", balance: userBalance.balance });
         const userDelegation = await stakingSC.getUserActiveStake();
@@ -51,9 +51,10 @@ function StakingContextProvider({ children }: ContextType) {
             });
           }
         }
-      };
+    };
+    if (getItem("logged_in") === true && wallet !== undefined) {
       fetchUserData();
-      const int = setInterval(async () => await fetchUserData(), 6000);
+      const int = setInterval(() => fetchUserData(), 6000);
       setRefreshInterval(int);
     }
     return () => {
