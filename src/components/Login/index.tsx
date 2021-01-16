@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { LedgerWallet, BasicWallet } from "elrondjs";
-import { useDispatch } from "../../context";
+import { useDispatch } from "../../context/Wallet";
 import { toast } from "react-toastify";
 import {
   Box,

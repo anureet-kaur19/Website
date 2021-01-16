@@ -21,18 +21,18 @@ import { ReactComponent as Logo } from "../../assets/img/logo.svg";
 import { Link } from "react-router-dom";
 import LayersIcon from "@material-ui/icons/Layers";
 import HomeIcon from "@material-ui/icons/Home";
-import { useContext, useDispatch } from "../../context";
+import { useContext, useDispatch } from "../../context/Wallet";
 import { Box } from "@material-ui/core";
+import { isMobile } from "react-device-detect";
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant="body2" color="inherit" align="center">
       {"Copyright © "}
       <RedirectTo color="inherit" href="https://truststaking.com/">
         Trust Staking
       </RedirectTo>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: "#fe8646",
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -127,11 +128,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 2),
     marginTop: "auto",
     flexGrow: 1,
+    color: "white",
+    backgroundColor: "#fe8646",
     overflow: "auto",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[200]
-        : theme.palette.grey[800],
   },
 }));
 
@@ -140,7 +139,7 @@ export default function Dashboard({ children }) {
   const classes = useStyles();
   const { loggedIn } = useContext();
   const dispatch = useDispatch();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(isMobile ? false : true);
   
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -175,7 +174,7 @@ export default function Dashboard({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography
-            component="h1"
+            component="b"
             variant="h6"
             color="inherit"
             noWrap

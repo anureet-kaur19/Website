@@ -1,5 +1,5 @@
 import { initialState, StateType } from "./state";
-import { setItem, removeItem } from "../storage/session";
+import { setItem, removeItem } from "../../storage/session";
 
 export type DispatchType = (action: ActionType) => void;
 

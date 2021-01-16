@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useContext } from "../../context";
+import { useContext } from "../../context/Wallet";
 import { addresses } from "../../contracts";
 
 const Lottery = () => {

@@ -1,5 +1,6 @@
-import { getItem } from "../storage/session";
+import { getItem } from "../../storage/session";
 import { ProxyProvider, Wallet } from "elrondjs";
+const CoinGecko = require('coingecko-api');
 
 export interface StateType {
   wallet: Wallet | undefined;
@@ -26,6 +27,7 @@ export const initialState = () => {
     }),
     loading: false,
     error: "",
+    coinGeckoClient: new CoinGecko(),
     loggedIn: !!getItem("logged_in"),
     loginType: getItem("loginType"),
     PEM: getItem("PEM"),

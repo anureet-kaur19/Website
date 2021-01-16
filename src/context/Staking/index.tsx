@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StateType, initialState } from "./state";
 import { DispatchType, reducer } from "./reducer";
 import { Wallet } from "elrondjs";
-import { useContext } from "../../context";
+import { useContext } from "../Wallet";
 import { getItem } from "../../storage/session";
 
 export interface ContextType {
@@ -34,6 +34,7 @@ function StakingContextProvider({ children }: ContextType) {
         stakingSC.setUserAddress(address);
         stakingSC.setWalletSigner(wallet as Wallet);
         stakingSC.setProxyProvider(provider);
+        stakingSC.initContract();
         const userBalance = await stakingSC.getUserData();
         dispatch({ type: "setBalance", balance: userBalance.balance });
         const userDelegation = await stakingSC.getUserActiveStake();

@@ -16,7 +16,11 @@
 
     &.rewards {
       background: url('../images/rewards.png') center center no-repeat,
-        linear-gradient(153.43deg, #209d67, #4bc197) ;
+        linear-gradient(153.43deg, #209d67, #4bc197) !important;
+    }
+    &.APRCalculator {
+      background: url('../images/rewards.png') center center no-repeat,
+        linear-gradient(153.43deg, #1233b2, #3464d0) !important;
     }
   }
   

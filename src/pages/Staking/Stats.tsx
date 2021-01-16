@@ -1,6 +1,7 @@
 import React from "react";
 import denominate from "../../components/Denominate/denominate";
 import { decimals, denomination } from "../../config";
+import { useGlobalContext } from "../../context/Global"
 
 interface StatsType {
   title: string;
@@ -25,6 +26,7 @@ const UsdValue = ({
   className?: string;
   dataTestId?: string;
 }) => {
+  const { USD } = useGlobalContext();
   return (
     <>
       <small className={className} data-testid={dataTestId}>
@@ -41,7 +43,7 @@ const UsdValue = ({
                 showLastNonZeroDecimal: false,
                 addCommas: false
               }),
-              usd: 25
+              usd: USD
             })}
           </>
         )}
