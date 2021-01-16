@@ -307,8 +307,8 @@ const Accordions = () => {
             </li>
             <li>
               <Typography variant="h5" paragraph>
-                We are open always to increase the APR if you can find a better
-                option somewhere else.
+                We are always happy to increase the APR if you can find a better
+                offer somewhere else.
               </Typography>
             </li>
             <li>
