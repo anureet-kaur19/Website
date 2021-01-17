@@ -15,7 +15,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  Paper,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SendIcon from "@material-ui/icons/Send";
