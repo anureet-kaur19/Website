@@ -15,11 +15,13 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  Paper,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SendIcon from "@material-ui/icons/Send";
 import AssetsCard from "../Staking/AssetCards";
 import nominate from "../../components/Nominate";
+import { useHistory } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -30,8 +32,23 @@ export default function Home() {
     </Container>
   );
 }
-
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      height: 140,
+      width: 100,
+    },
+    control: {
+      padding: theme.spacing(2),
+    },
+  })
+);
 const Calculator = () => {
+  const classes = useStyles();
+  const history = useHistory();
   const [daily, setDaily] = useState(0);
   const [weekly, setWeekly] = useState(0);
   const [monthly, setMonthly] = useState(0);
@@ -176,37 +193,56 @@ const Calculator = () => {
         </Grid>
         <Grid container justify="center" spacing={2}>
           {isMobile && (
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              style={{ backgroundColor: "#2146be" }}
-              endIcon={<SendIcon />}
-            >
-              Delegate
-            </Button>
-          )}
-          {cards.map(({ label, value, showDecimals, className }, index) => (
-            <Grid key={index} xs={12} md={3} sm={6} xl={4} item>
-              <AssetsCard
-                key={index}
-                showDecimals={showDecimals}
-                className={className}
-                label={label}
-                value={nominate(value.toString())}
-              />
+            <Grid container justify="center" style={{ padding: "20px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  history.push("/staking");
+                }}
+                style={{ backgroundColor: "#2146be" }}
+                endIcon={<SendIcon />}
+              >
+                Delegate
+              </Button>
             </Grid>
-          ))}
+          )}
+          <Grid
+            container
+            justify="center"
+            direction="row"
+            alignItems="center"
+            spacing={2}
+            className={classes.root}
+          >
+            {cards.map(({ label, value, showDecimals, className }, index) => (
+              <Grid item key={index} md={4} sm={6} xs={12}>
+                <AssetsCard
+                  key={index}
+                  showDecimals={showDecimals}
+                  className={className}
+                  label={label}
+                  value={nominate(value.toString())}
+                />
+              </Grid>
+            ))}
+          </Grid>
           {isBrowser && (
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              style={{ backgroundColor: "#2146be" }}
-              endIcon={<SendIcon />}
-            >
-              Delegate
-            </Button>
+            <Grid container justify="center"  style={{ padding: "20px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  history.push("/staking");
+                }}
+                style={{ backgroundColor: "#2146be" }}
+                endIcon={<SendIcon />}
+              >
+                Delegate
+              </Button>
+            </Grid>
           )}
         </Grid>
       </CardContent>
@@ -220,8 +256,9 @@ const useStylesAccordion = makeStyles((theme: Theme) =>
       width: "100%",
     },
     heading: {
-      fontSize: theme.typography.pxToRem(20),
-      flexBasis: "55.55%",
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexWrap: "wrap",
       flexShrink: 0,
     },
     secondaryHeading: {
@@ -252,7 +289,7 @@ const Accordions = () => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={classes.heading}>Who are we?</Typography>
+         <Typography className={classes.heading}>Who are we?</Typography>
           <Typography className={classes.secondaryHeading}>
             Hello there!
           </Typography>
@@ -284,7 +321,7 @@ const Accordions = () => {
           aria-controls="panel2bh-content"
           id="panel2bh-header"
         >
-          <Typography className={classes.heading} >
+          <Typography className={classes.heading}>
             What can we offer to you ?
           </Typography>
           <Typography className={classes.secondaryHeading}>
@@ -294,7 +331,7 @@ const Accordions = () => {
         <AccordionDetails>
           <ul style={{ listStyle: "none" }}>
             <li>
-              <Typography variant="h5"  paragraph>
+              <Typography variant="h5" paragraph>
                 The first APR will be set at ~20% with a withdraw period of 3
                 days.
               </Typography>
@@ -313,8 +350,8 @@ const Accordions = () => {
             </li>
             <li>
               <Typography variant="h5" paragraph>
-                As transparency is a top priority for us we will announce all future
-                changes on our Telegram group.
+                As transparency is a top priority for us we will announce all
+                future changes on our Telegram group.
               </Typography>
             </li>
           </ul>
@@ -329,21 +366,25 @@ const Accordions = () => {
           aria-controls="panel3bh-content"
           id="panel3bh-header"
         >
-          <Typography className={classes.heading}>Why is this website so simple ?</Typography>
+          <Typography className={classes.heading}>
+            Why is this website so simple ?
+          </Typography>
           <Typography className={classes.secondaryHeading}>
             Good question my friend!
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-        <ul style={{ listStyle: "none" }}>
+          <ul style={{ listStyle: "none" }}>
             <li>
-              <Typography variant="h5"  paragraph>
-                As we are sure you are here to make a new passive income stream you are not going to be impressed by a fency website design.
+              <Typography variant="h5" paragraph>
+                As we are sure you are here to make a new passive income stream
+                you are not going to be impressed by a fency website design.
               </Typography>
             </li>
             <li>
-              <Typography variant="h5"  paragraph>
-                We focused our attention on how easy is for you to delegate and view rewards since you arrived on our website.
+              <Typography variant="h5" paragraph>
+                We focused our attention on how easy is for you to delegate and
+                view rewards since you arrived on our website.
               </Typography>
             </li>
           </ul>

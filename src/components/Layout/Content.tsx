@@ -13,16 +13,21 @@ import RedirectTo from "@material-ui/core/Link";
 import Container from "@material-ui/core/Container";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { ReactComponent as Logo } from "../../assets/img/logo.svg";
 import { Link } from "react-router-dom";
 import LayersIcon from "@material-ui/icons/Layers";
+import TelegramIcon from '@material-ui/icons/Telegram';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import YouTubeIcon from '@material-ui/icons/YouTube';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import HomeIcon from "@material-ui/icons/Home";
 import { useContext, useDispatch } from "../../context/Wallet";
-import { Box } from "@material-ui/core";
+import { Box, ListSubheader } from "@material-ui/core";
 import { isMobile } from "react-device-detect";
 
 function Copyright() {
@@ -140,7 +145,7 @@ export default function Dashboard({ children }) {
   const { loggedIn } = useContext();
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(isMobile ? false : true);
-  
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -148,7 +153,7 @@ export default function Dashboard({ children }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  
+
   const logout = () => {
     dispatch({ type: "logout" });
   };
@@ -183,8 +188,13 @@ export default function Dashboard({ children }) {
             Trust Staking
           </Typography>
           {loggedIn && (
-            <IconButton color="inherit" onClick={() => {logout();}}>
-                <ExitToAppIcon />
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                logout();
+              }}
+            >
+              <ExitToAppIcon />
             </IconButton>
           )}
         </Toolbar>
@@ -201,7 +211,11 @@ export default function Dashboard({ children }) {
             <ChevronLeftIcon />
           </IconButton>
         </div>
-        {open ? <Box textAlign="center"><Logo /></Box> : null}
+        {open ? (
+          <Box textAlign="center">
+            <Logo />
+          </Box>
+        ) : null}
         <Divider />
         <List>{mainListItems}</List>
       </Drawer>
@@ -232,6 +246,38 @@ export const mainListItems = (
         <LayersIcon />
       </ListItemIcon>
       <ListItemText primary="Staking" />
+    </ListItem>
+    <Divider />
+    <ListSubheader inset>Follow us!</ListSubheader>
+    <ListItem button component="a" href={"https://t.me/truststaking"} target="_blank">
+      <ListItemIcon>
+        <TelegramIcon />
+      </ListItemIcon>
+      <ListItemText primary="Telegram" />
+    </ListItem>
+    <ListItem button component="a" href={"https://twitter.com/truststaking"} target="_blank">
+      <ListItemIcon>
+        <TwitterIcon />
+      </ListItemIcon>
+      <ListItemText primary="Twitter" />
+    </ListItem>
+    <ListItem button component="a" href={"https://github.com/truststaking"} target="_blank">
+      <ListItemIcon>
+        <GitHubIcon />
+      </ListItemIcon>
+      <ListItemText primary="GitHub" />
+    </ListItem>
+    <ListItem button component="a" href={"https://www.youtube.com/channel/UCeknNkwBJZhrHcPPEMHAYrg"} target="_blank">
+      <ListItemIcon>
+        <YouTubeIcon />
+      </ListItemIcon>
+      <ListItemText primary="YouTube" />
+    </ListItem>
+    <ListItem button component="a" href={"https://www.linkedin.com/company/truststaking/"} target="_blank">
+      <ListItemIcon>
+        <LinkedInIcon />
+      </ListItemIcon>
+      <ListItemText primary="LinkedIn" />
     </ListItem>
   </div>
 );
