@@ -4,6 +4,7 @@ import { StateInspector } from "reinspect";
 import App from "./App";
 import "./index.css";
 import "./assets/sass/theme.scss";
+import './i18n';
 
 let MountedApp = (
   <React.StrictMode>

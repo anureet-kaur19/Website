@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { isMobile, isBrowser } from "react-device-detect";
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -48,6 +49,7 @@ const useStylesHome = makeStyles((theme: Theme) =>
 
 export default function Home() {
   const classes = useStylesHome();
+  const { t } = useTranslation();
   return (
     <Container style={{ padding: "5px" }}>
       <Card style={{ paddingBottom: "35px" }}>
@@ -75,7 +77,7 @@ export default function Home() {
                     component="h6"
                     variant="h6"
                   >
-                    Reward percentage (<b>APR</b>)
+                    {t('reward-title-paragraph')} (<b>APR</b>)
                   </Typography>
                 </Grid>
                 <Grid container justify="center">
@@ -84,7 +86,7 @@ export default function Home() {
                     color="textSecondary"
                     align="center"
                   >
-                    We will offer you the best <b>APR</b> on the market set at{" "}
+                    {t('reward-paragraph')}{' '}
                     <b>
                       <i>20%</i>
                     </b>
@@ -110,7 +112,7 @@ export default function Home() {
                     component="h6"
                     variant="h6"
                   >
-                    Unbound period
+                    {t('unbound-title-paragraph')}
                   </Typography>
                 </Grid>
                 <Grid container justify="center">
@@ -119,7 +121,8 @@ export default function Home() {
                     color="textSecondary"
                     align="center"
                   >
-                    You can withdraw your money in 3 days after the request!
+                    
+                    {t('unbound-paragraph-1')} <b>3 {t('days')}</b> {t('unbound-paragraph-2')}
                   </Typography>
                 </Grid>
               </Grid>
@@ -145,7 +148,7 @@ export default function Home() {
                     component="h6"
                     variant="h6"
                   >
-                    Minimum amount
+                    {t('minimum-amount')}
                   </Typography>
                 </Grid>
                 <Grid container justify="center">
@@ -154,7 +157,7 @@ export default function Home() {
                     color="textSecondary"
                     align="center"
                   >
-                    You can start delegating with <b>10 eGLD</b>
+                    {t('minimum-amount-paragraph')} <b>10 eGLD</b>
                   </Typography>
                 </Grid>
               </Grid>
@@ -162,7 +165,6 @@ export default function Home() {
           </Grid>
         </CardContent>
       </Card>
-      {/* <Accordions /> */}
       <br />
       <Calculator />
     </Container>
@@ -187,6 +189,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Calculator = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { t } = useTranslation();
   const [daily, setDaily] = useState(0);
   const [weekly, setWeekly] = useState(0);
   const [monthly, setMonthly] = useState(0);
@@ -267,37 +270,37 @@ const Calculator = () => {
 
   const cards = [
     {
-      label: "Daily",
+      label: t('daily'),
       value: daily,
       className: "APRCalculator",
       showDecimals: true,
     },
     {
-      label: "Weekly",
+      label: t('weekly'),
       value: weekly,
       className: "APRCalculator",
       showDecimals: true,
     },
     {
-      label: "Monthly",
+      label: t('monthly'),
       value: monthly,
       className: "APRCalculator",
       showDecimals: true,
     },
     {
-      label: "Yearly",
+      label: t('yearly'),
       value: yearly,
       className: "APRCalculator",
       showDecimals: true,
     },
     {
-      label: "Current Value",
+      label: t('current-value'),
       value: value,
       className: "APRCalculator",
       showDecimals: true,
     },
     {
-      label: "APR",
+      label: 'APR',
       value: 20,
       className: "APRCalculator",
     },
@@ -311,7 +314,7 @@ const Calculator = () => {
           align="center"
           style={{ paddingBottom: "35px" }}
         >
-          How much EGLD do you have?
+          {t('amount')}
         </Typography>
         <Grid
           container
@@ -342,7 +345,7 @@ const Calculator = () => {
                 style={{ backgroundColor: "#2146be" }}
                 endIcon={<SendIcon />}
               >
-                Delegate
+                {t('delegate')}
               </Button>
             </Grid>
           )}
@@ -378,7 +381,7 @@ const Calculator = () => {
                 style={{ backgroundColor: "#2146be" }}
                 endIcon={<SendIcon />}
               >
-                Delegate
+                {t('delegate')}
               </Button>
             </Grid>
           )}
