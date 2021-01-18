@@ -20,15 +20,23 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { ReactComponent as Logo } from "../../assets/img/logo.svg";
 import { Link } from "react-router-dom";
 import LayersIcon from "@material-ui/icons/Layers";
-import TelegramIcon from '@material-ui/icons/Telegram';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import YouTubeIcon from '@material-ui/icons/YouTube';
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import TelegramIcon from "@material-ui/icons/Telegram";
+import TwitterIcon from "@material-ui/icons/Twitter";
+import YouTubeIcon from "@material-ui/icons/YouTube";
+import LinkedInIcon from "@material-ui/icons/LinkedIn";
+import GitHubIcon from "@material-ui/icons/GitHub";
 import HomeIcon from "@material-ui/icons/Home";
 import { useContext, useDispatch } from "../../context/Wallet";
-import { Box, ListSubheader } from "@material-ui/core";
+import {
+  Box,
+  FormControl,
+  ListSubheader,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import { isMobile } from "react-device-detect";
+import { useGlobalContext, useGlobalDispatch } from "../../context/Global";
+import { useTranslation } from 'react-i18next';
 
 function Copyright() {
   return (
@@ -137,13 +145,23 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#fe8646",
     overflow: "auto",
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 30,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 // @ts-ignore
 export default function Dashboard({ children }) {
   const classes = useStyles();
   const { loggedIn } = useContext();
+  const { LNG } = useGlobalContext();
+  const { i18n } = useTranslation();
   const dispatch = useDispatch();
+  const dispatchGlobal = useGlobalDispatch();
   const [open, setOpen] = React.useState(isMobile ? false : true);
 
   const handleDrawerOpen = () => {
@@ -158,6 +176,11 @@ export default function Dashboard({ children }) {
     dispatch({ type: "logout" });
   };
 
+  const handleChange = (event: any) => {
+    const language = event.target.value as string;
+    i18n.changeLanguage(language)
+    dispatchGlobal({ type: "language", language});
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -197,6 +220,16 @@ export default function Dashboard({ children }) {
               <ExitToAppIcon />
             </IconButton>
           )}
+          <FormControl className={classes.formControl}>
+            <Select
+              value={LNG}
+              onChange={handleChange}
+            >
+              <MenuItem value={'en'}>EN</MenuItem>
+              <MenuItem value={'ro'}>RO</MenuItem>
+              {/* <MenuItem value={'it'}>IT</MenuItem> */}
+            </Select>
+          </FormControl>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -249,31 +282,56 @@ export const mainListItems = (
     </ListItem>
     <Divider />
     <ListSubheader inset>Follow us!</ListSubheader>
-    <ListItem button component="a" href={"https://t.me/truststaking"} target="_blank">
+    <ListItem
+      button
+      component="a"
+      href={"https://t.me/truststaking"}
+      target="_blank"
+    >
       <ListItemIcon>
         <TelegramIcon />
       </ListItemIcon>
       <ListItemText primary="Telegram" />
     </ListItem>
-    <ListItem button component="a" href={"https://twitter.com/truststaking"} target="_blank">
+    <ListItem
+      button
+      component="a"
+      href={"https://twitter.com/truststaking"}
+      target="_blank"
+    >
       <ListItemIcon>
         <TwitterIcon />
       </ListItemIcon>
       <ListItemText primary="Twitter" />
     </ListItem>
-    <ListItem button component="a" href={"https://github.com/truststaking"} target="_blank">
+    <ListItem
+      button
+      component="a"
+      href={"https://github.com/truststaking"}
+      target="_blank"
+    >
       <ListItemIcon>
         <GitHubIcon />
       </ListItemIcon>
       <ListItemText primary="GitHub" />
     </ListItem>
-    <ListItem button component="a" href={"https://www.youtube.com/channel/UCeknNkwBJZhrHcPPEMHAYrg"} target="_blank">
+    <ListItem
+      button
+      component="a"
+      href={"https://www.youtube.com/channel/UCeknNkwBJZhrHcPPEMHAYrg"}
+      target="_blank"
+    >
       <ListItemIcon>
         <YouTubeIcon />
       </ListItemIcon>
       <ListItemText primary="YouTube" />
     </ListItem>
-    <ListItem button component="a" href={"https://www.linkedin.com/company/truststaking/"} target="_blank">
+    <ListItem
+      button
+      component="a"
+      href={"https://www.linkedin.com/company/truststaking/"}
+      target="_blank"
+    >
       <ListItemIcon>
         <LinkedInIcon />
       </ListItemIcon>

@@ -17,7 +17,6 @@ function GlobalContextProvider({ children }: ContextType) {
   const getLatestElrondData = async () => {
     axios.get(`https://testnet-api.elrond.com/quotes/latest`)
     .then(res => {
-      console.log(res.data);
       dispatch({type: "USD", USD: res.data.usd});
       dispatch({type: "CAP", CAP: res.data.market_cap});
       dispatch({type: "VOL", VOL: res.data.volume_24h});

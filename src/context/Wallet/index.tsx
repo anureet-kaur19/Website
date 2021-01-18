@@ -41,7 +41,6 @@ function ContextProvider({ children }: ContextType) {
             Buffer.from(PEM, "base64").toString()
           );
           const address = wallet.address();
-          console.log(wallet);
           // Set this provider as default inside the app
           dispatch({ type: "setWallet", wallet });
           dispatch({ type: "login", address });
@@ -78,11 +77,9 @@ function ContextProvider({ children }: ContextType) {
             ledgerLogin();
             break;
           case "PEM":
-            console.log("Auto Login PEM");
             PEMLogin();
             break;
           case "JSON":
-            console.log("Auto Login JSON");
             JSONLogin();
             break;
           default:
