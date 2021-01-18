@@ -11,26 +11,164 @@ import {
   Slider,
   Theme,
   Typography,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Button,
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SendIcon from "@material-ui/icons/Send";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 import AssetsCard from "../Staking/AssetCards";
 import nominate from "../../components/Nominate";
+import StarBorderTwoToneIcon from "@material-ui/icons/StarBorderTwoTone";
+import Avatar from "@material-ui/core/Avatar";
 import { useHistory } from "react-router-dom";
 
+const useStylesHome = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+      "& > *": {
+        margin: theme.spacing(1),
+      },
+    },
+    small: {
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+    },
+    large: {
+      width: theme.spacing(14),
+      height: theme.spacing(14),
+    },
+    icon: {
+      color: "primary",
+      width: theme.spacing(10),
+      height: theme.spacing(10),
+    },
+  })
+);
+
 export default function Home() {
+  const classes = useStylesHome();
   return (
     <Container style={{ padding: "5px" }}>
-      <Accordions />
+      <Card style={{ paddingBottom: "35px" }}>
+        <CardContent>
+          {" "}
+          <Grid container spacing={2} justify="center">
+            <Grid item container xs={12} sm={4} justify="center">
+              <Grid container justify="center">
+                <Grid container justify="center">
+                  <Avatar
+                    style={{ backgroundColor: "transparent" }}
+                    className={classes.large}
+                    variant="rounded"
+                  >
+                    <StarBorderTwoToneIcon
+                      color="primary"
+                      className={classes.icon}
+                    />{" "}
+                  </Avatar>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    align="center"
+                    color="textPrimary"
+                    component="h6"
+                    variant="h6"
+                  >
+                    Reward percentage (<b>APR</b>)
+                  </Typography>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    We will offer you the best <b>APR</b> on the market set at{" "}
+                    <b>
+                      <i>20%</i>
+                    </b>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item container xs={12} sm={4} justify="center">
+              <Grid container justify="center">
+                <Grid container justify="center">
+                  <Avatar
+                    style={{ backgroundColor: "transparent" }}
+                    className={classes.large}
+                    variant="rounded"
+                  >
+                    <ScheduleIcon color="primary" className={classes.large} />{" "}
+                  </Avatar>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    align="center"
+                    color="textPrimary"
+                    component="h6"
+                    variant="h6"
+                  >
+                    Unbound period
+                  </Typography>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    You can withdraw your money in 3 days after the request!
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item container xs={12} sm={4} justify="center">
+              <Grid container justify="center">
+                <Grid container justify="center">
+                  <Avatar
+                    style={{ backgroundColor: "transparent" }}
+                    className={classes.large}
+                    variant="rounded"
+                  >
+                    <AccountBalanceIcon
+                      color="primary"
+                      className={classes.large}
+                    />{" "}
+                  </Avatar>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    align="center"
+                    color="textPrimary"
+                    component="h6"
+                    variant="h6"
+                  >
+                    Minimum amount
+                  </Typography>
+                </Grid>
+                <Grid container justify="center">
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    You can start delegating with <b>10 eGLD</b>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      {/* <Accordions /> */}
       <br />
       <Calculator />
     </Container>
   );
 }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -45,6 +183,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
 const Calculator = () => {
   const classes = useStyles();
   const history = useHistory();
@@ -228,7 +367,7 @@ const Calculator = () => {
             ))}
           </Grid>
           {isBrowser && (
-            <Grid container justify="center"  style={{ padding: "20px" }}>
+            <Grid container justify="center" style={{ padding: "20px" }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -246,149 +385,5 @@ const Calculator = () => {
         </Grid>
       </CardContent>
     </Card>
-  );
-};
-
-const useStylesAccordion = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexWrap: "wrap",
-      flexShrink: 0,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-    },
-  })
-);
-
-const Accordions = () => {
-  const classes = useStylesAccordion();
-  const [expanded, setExpanded] = React.useState<string | false>(false);
-
-  const handleChange = (panel: string) => (
-    event: React.ChangeEvent<{}>,
-    isExpanded: boolean
-  ) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-  return (
-    <div className={classes.root}>
-      <Accordion
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-         <Typography className={classes.heading}>Who are we?</Typography>
-          <Typography className={classes.secondaryHeading}>
-            Hello there!
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ul style={{ listStyle: "none" }}>
-            <li>
-              <Typography variant="h5" component="p" paragraph>
-                We are a team of developers running nodes on Elrond Network and
-                starting to build on top of this amazing technology!
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="h5" component="p" paragraph>
-                Following our experience in the tech domain, we decided to start
-                our own Staking Agency trying to provide the best APR and
-                unbound period for Elrond Network using an on-demand approach.
-              </Typography>
-            </li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "panel2"}
-        onChange={handleChange("panel2")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2bh-content"
-          id="panel2bh-header"
-        >
-          <Typography className={classes.heading}>
-            What can we offer to you ?
-          </Typography>
-          <Typography className={classes.secondaryHeading}>
-            Intersting question, isn't ?
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ul style={{ listStyle: "none" }}>
-            <li>
-              <Typography variant="h5" paragraph>
-                The first APR will be set at ~20% with a withdraw period of 3
-                days.
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="h5" paragraph>
-                Base on our on-demand staking approach we are pushing very hard
-                to have the best APR on the market.
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="h5" paragraph>
-                We are always happy to increase the APR if you can find a better
-                offer somewhere else.
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="h5" paragraph>
-                As transparency is a top priority for us we will announce all
-                future changes on our Telegram group.
-              </Typography>
-            </li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "panel3"}
-        onChange={handleChange("panel3")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3bh-content"
-          id="panel3bh-header"
-        >
-          <Typography className={classes.heading}>
-            Why is this website so simple ?
-          </Typography>
-          <Typography className={classes.secondaryHeading}>
-            Good question my friend!
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ul style={{ listStyle: "none" }}>
-            <li>
-              <Typography variant="h5" paragraph>
-                As we are sure you are here to make a new passive income stream
-                you are not going to be impressed by a fency website design.
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="h5" paragraph>
-                We focused our attention on how easy is for you to delegate and
-                view rewards since you arrived on our website.
-              </Typography>
-            </li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
-    </div>
   );
 };
