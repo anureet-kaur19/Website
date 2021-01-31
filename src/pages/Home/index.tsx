@@ -121,7 +121,6 @@ export default function Home() {
                     color="textSecondary"
                     align="center"
                   >
-                    
                     {t('unbound-paragraph-1')} <b>10 {t('days')}</b> {t('unbound-paragraph-2')}
                   </Typography>
                 </Grid>
