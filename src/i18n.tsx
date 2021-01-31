@@ -26,9 +26,9 @@ const resources = {
   ro: {
     translation: {
       "reward-title-paragraph": "Procentaj primit pe an",
-      "reward-paragraph": "Vă vom oferi cea mai bună dobandă din piață stabilită la",
+      "reward-paragraph": "Iti oferim cea mai bună dobandă din piață stabilită la",
       "unbound-title-paragraph": "Perioadă de retragere",
-      "unbound-paragraph-1": "Vă puteți retrage banii în",
+      "unbound-paragraph-1": "Puteți retrage banii în",
       "unbound-paragraph-2": "după solicitare!",
       "days": "zile",
       "minimum-amount": "Sumă minimă",
