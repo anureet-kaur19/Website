@@ -17,7 +17,7 @@ import {
 import SendIcon from "@material-ui/icons/Send";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import ScheduleIcon from "@material-ui/icons/Schedule";
-import AssetsCard from "../Staking/AssetCards";
+import AssetsCard from "../../components/Cards";
 import nominate from "../../components/Nominate";
 import StarBorderTwoToneIcon from "@material-ui/icons/StarBorderTwoTone";
 import Avatar from "@material-ui/core/Avatar";

@@ -106,11 +106,26 @@ export class Staking {
       };
     } catch (error) {
       return {
-        unStakedAmount: "0",
       };
     }
   }
-
+  public async getUserUnBondable(): Promise<any> {
+    try {
+      let response = await this.contract.query("getUserUnBondable", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+      const unBondableAmount = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      return {
+        unBondableBalance: unBondableAmount.toString(),
+      };
+    } catch (error) {
+      return {
+      };
+    }
+  }
   public async getClaimableRewards(): Promise<any> {
     try {
       let response = await this.contract.query("getClaimableRewards", [
@@ -120,6 +135,10 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.BIG_INT,
       });
+      // this.getContractConfig();
+      // this.getNumUsers();
+      // this.getTotalActiveStake();
+      // this.getNumNodes();
       return {
         rewardAmount: rewardBalance.toString(),
       };
@@ -138,9 +157,7 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.BIG_INT,
       });
-      return {
-        totalStakedAmount: totalStakedAmount.toString(),
-      };
+      console.log("Total Staked Agency",totalStakedAmount.toString());
     } catch (error) {
       return {
         totalStakedAmount: "0",
@@ -156,24 +173,73 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.INT,
       });
-      return {
-        totalUsers: totalUsers.toString(),
-      };
+      console.log("Total Users", totalUsers);
+      
     } catch (error) {
       return {
         totalUsers: "0",
       };
     }
   }
+
+  public async getNumNodes(): Promise<any> {
+    try {
+      let response = await this.contract.query("getNumNodes", []);
+
+      const totalNodes = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.INT,
+      });
+      console.log("Total Nodes", totalNodes);
+      
+    } catch (error) {
+      return {
+        totalUsers: "0",
+      };
+    }
+  }
+
+  public async isDelegator(): Promise<boolean> {
+    try {
+      let response = await this.contract.query("isDelegator", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+
+      const isDelegator = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.BOOLEAN,
+      });
+
+      return isDelegator as boolean;
+    } catch (error) {
+      return false;
+    }
+  }
   public async getContractConfig(): Promise<any> {
     try {
       let response = await this.contract.query("getContractConfig");
-      const rewardBalance = parseQueryResult(response, {
-        index: 0,
+      const serviceFee = parseQueryResult(response, {
+        index: 1,
+        type: ContractQueryResultDataType.INT,
+      });
+      const maxDelegationCap = parseQueryResult(response, {
+        index: 2,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      const automaticDelegation = parseQueryResult(response, {
+        index: 4,
         type: ContractQueryResultDataType.STRING,
       });
+      const unboundPeriod = parseQueryResult(response, {
+        index: 8,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      console.log("Service fee", serviceFee);
+      console.log("Max delegation Cap", maxDelegationCap.toString());
+      console.log("Unbound Period", unboundPeriod.toString());
+      console.log("Automatic Activation", automaticDelegation);
       return {
-        rewardAmount: BigInt(rewardBalance).toString(),
+        rewardAmount: 0,
       };
     } catch (error) {
       toast.error(error.message);
@@ -185,9 +251,9 @@ export class Staking {
     return balance;
   }
 
-  public async delegate(amount: number): Promise<TransactionReceipt> {
+  public async delegate(amount: string): Promise<TransactionReceipt> {
     let tx = await this.contract.invoke("delegate", [], {
-      value: new BigVal(amount),
+      value: new BigVal(amount, "coins"),
       gasLimit: 12000000,
     });
 
@@ -206,7 +272,6 @@ export class Staking {
     let tx = await this.contract.invoke("withdraw", [], {
       gasLimit: 6000000,
     });
-
     return tx;
   }
 
@@ -214,18 +279,13 @@ export class Staking {
     let tx = await this.contract.invoke("reDelegateRewards", [], {
       gasLimit: 12000000,
     });
-
     return tx;
   }
 
-  public async unDelegate(amount: number): Promise<TransactionReceipt> {
-    let tx = await this.contract.invoke(
-      "unDelegate",
-      [numberToHex(new BigVal(amount))],
-      {
-        gasLimit: 12000000,
-      }
-    );
+  public async unDelegate(amount: string): Promise<TransactionReceipt> {
+    let tx = await this.contract.invoke("unDelegate", [numberToHex(new BigVal(amount, "coins"))], {
+      gasLimit: 12000000,
+    });
     return tx;
   }
 }

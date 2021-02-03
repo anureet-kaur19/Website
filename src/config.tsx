@@ -76,7 +76,7 @@ export const elrondApps = [
 
 export const transactionSize: number = 20;
 export const metaChainShardId: number = 4294967295;
-export const decimals: number = 4;
+export const decimals: number = 3;
 export const denomination: number = 18;
 export const gasLimit: string = "50000";
 export const tokenGasLimit: string = "500000";

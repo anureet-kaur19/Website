@@ -24,38 +24,52 @@ function StakingContextProvider({ children }: ContextType) {
   //@ts-ignore
   useEffect(() => {
     const fetchUserData = async () => {
-        if (getItem("logged_in") === false) {
-          if (interval !== undefined) {
-            clearInterval(interval as NodeJS.Timeout);
-            setRefreshInterval(undefined);
-          }
-          return;
+      if (getItem("logged_in") === false) {
+        if (interval !== undefined) {
+          clearInterval(interval as NodeJS.Timeout);
+          setRefreshInterval(undefined);
         }
-        stakingSC.setUserAddress(address);
-        stakingSC.setWalletSigner(wallet as Wallet);
-        stakingSC.setProxyProvider(provider);
-        stakingSC.initContract();
-        const userBalance = await stakingSC.getUserData();
-        dispatch({ type: "setBalance", balance: userBalance.balance });
-        const userDelegation = await stakingSC.getUserActiveStake();
-        dispatch({ type: "setIsActive", isActive: userDelegation.isActive });
-        if (userDelegation.isActive && userDelegation.stakeAmount) {
+        return;
+      }
+      stakingSC.setUserAddress(address);
+      stakingSC.setWalletSigner(wallet as Wallet);
+      stakingSC.setProxyProvider(provider);
+      stakingSC.initContract();
+      const userBalance = await stakingSC.getUserData();
+      dispatch({ type: "setBalance", balance: userBalance.balance });
+      const userDelegation = await stakingSC.getUserActiveStake();
+      dispatch({ type: "setIsActive", isActive: userDelegation.isActive });
+      if (userDelegation.isActive && userDelegation.stakeAmount) {
+        dispatch({
+          type: "setDelegateBalance",
+          delegateBalance: userDelegation.stakeAmount,
+        });
+        const rewardsAvailable = await stakingSC.getClaimableRewards();
+        if (rewardsAvailable) {
           dispatch({
-            type: "setDelegateBalance",
-            delegateBalance: userDelegation.stakeAmount,
+            type: "setRewardBalance",
+            rewardBalance: rewardsAvailable.rewardAmount,
           });
-          const rewardsAvailable = await stakingSC.getClaimableRewards();
-          if (rewardsAvailable) {
+        }
+        const getUserUnStakedValue = await stakingSC.getUserUnStakedValue();
+        if (getUserUnStakedValue.unStakedAmount) {
+          dispatch({
+            type: "setUserUnStakedValue",
+            unStakedBalance: getUserUnStakedValue.unStakedAmount,
+          });
+          const getUserUnBondable = await stakingSC.getUserUnBondable()
+          if (getUserUnBondable.unBondableBalance) {
             dispatch({
-              type: "setRewardBalance",
-              rewardBalance: rewardsAvailable.rewardAmount,
+              type: "setUserUnBondable",
+              unBondableBalance: getUserUnBondable.unBondableBalance,
             });
           }
         }
+      }
     };
     if (getItem("logged_in") === true && wallet !== undefined) {
       fetchUserData();
-      const int = setInterval(() => fetchUserData(), 6000);
+      const int = setInterval(() => fetchUserData(), 10000);
       setRefreshInterval(int);
     }
     return () => {

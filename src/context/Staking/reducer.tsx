@@ -9,7 +9,8 @@ export type ActionType =
       type: "setDelegateBalance";
       delegateBalance: StateType["delegateBalance"];
     }
-  | { type: "setUnBoundBalance"; unBoundBalance: StateType["unBoundBalance"] }
+  | { type: "setUserUnStakedValue"; unStakedBalance: StateType["unStakedBalance"] }
+  | { type: "setUserUnBondable"; unBondableBalance: StateType["unBondableBalance"] }
   | { type: "setStakingSC"; stakingSC: StateType["stakingSC"] }
   | { type: "setIsActive"; isActive: StateType["isActive"] };
 
@@ -39,14 +40,21 @@ export function reducer(state: StateType, action: ActionType): StateType {
       };
     }
 
-    case "setUnBoundBalance": {
-      const { unBoundBalance } = action;
+    case "setUserUnStakedValue": {
+      const { unStakedBalance } = action;
       return {
         ...state,
-        unBoundBalance,
+        unStakedBalance,
       };
     }
 
+    case "setUserUnBondable": {
+      const { unBondableBalance } = action;
+      return {
+        ...state,
+        unBondableBalance,
+      };
+    }
     case "setStakingSC": {
       const { stakingSC } = action;
       return {

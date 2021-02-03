@@ -13,8 +13,8 @@ import { GlobalContextProvider } from "./context/Global";
 const App = () => {
   return (
     <Router>
-      <TransactionToastsProvider>
-        <GlobalContextProvider>
+      <GlobalContextProvider>
+        <TransactionToastsProvider placement="bottom-center" autoDismissTimeout={2500}>
           <ContextProvider>
             <MenuAppBar>
               <StakingContextProvider>
@@ -32,8 +32,8 @@ const App = () => {
               </StakingContextProvider>
             </MenuAppBar>
           </ContextProvider>
-        </GlobalContextProvider>
-      </TransactionToastsProvider>
+        </TransactionToastsProvider>
+      </GlobalContextProvider>
       <ToastContainer />
     </Router>
   );
