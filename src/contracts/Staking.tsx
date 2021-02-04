@@ -137,10 +137,10 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.BIG_INT,
       });
-      // this.getContractConfig();
-      // this.getNumUsers();
-      // this.getTotalActiveStake();
-      // this.getNumNodes();
+      this.getContractConfig();
+      this.getNumUsers();
+      this.getTotalActiveStake();
+      this.getNumNodes();
       return {
         rewardAmount: rewardBalance.toString(),
       };
