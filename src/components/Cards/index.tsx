@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 interface AssetsCardType {
   icon?: any;
   label: React.ReactNode;
+  erdLabel: string;
   value: string;
   className: string;
   showDecimals?: boolean;
@@ -16,6 +17,7 @@ interface AssetsCardType {
 }
 const AssetsCard = ({
   label,
+  erdLabel,
   value,
   className,
   dataTestId,
@@ -34,6 +36,7 @@ const AssetsCard = ({
           ) : (
             <Denominate
               value={value}
+              label={erdLabel}
               data-testid={dataTestId ? dataTestId : ""}
               decimals={showDecimals ? decimals : 0}
             />

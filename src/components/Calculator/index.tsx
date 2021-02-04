@@ -9,6 +9,7 @@ import {
     Theme,
     createStyles,
   } from "@material-ui/core/styles";
+import { useGlobalContext } from "../../context/Global";
   
 const useCalculatorStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +32,7 @@ interface CalcualtorProps {
 
 export const Calculator = ({balance}: CalcualtorProps) => {
   const classes = useCalculatorStyles();
+  const { Label } = useGlobalContext();
   const { t } = useTranslation();
   const [daily, setDaily] = useState(0);
   const [weekly, setWeekly] = useState(0);
@@ -113,6 +115,7 @@ export const Calculator = ({balance}: CalcualtorProps) => {
           <Grid item key={index} md={4} sm={6} xs={12}>
             <AssetsCard
               key={index}
+              erdLabel={Label}
               showDecimals={showDecimals}
               className={className}
               label={label}

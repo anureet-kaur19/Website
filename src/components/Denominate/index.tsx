@@ -5,6 +5,7 @@ interface DenominateType {
   value: string;
   showLastNonZeroDecimal?: boolean;
   showLabel?: boolean;
+  label: string;
   token?: string;
   decimals?: number;
   "data-testid"?: string;
@@ -72,7 +73,7 @@ const Denominate = (props: DenominateType) => {
 
   return isNaN(parseFloat(value))
     ? denominateInvalid(props)
-    : denominateValid(props, "eGLD");
+    : denominateValid(props, props.label);
 };
 
 export default Denominate;

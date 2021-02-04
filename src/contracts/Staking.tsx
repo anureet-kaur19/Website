@@ -109,6 +109,7 @@ export class Staking {
       };
     }
   }
+
   public async getUserUnBondable(): Promise<any> {
     try {
       let response = await this.contract.query("getUserUnBondable", [
@@ -126,6 +127,7 @@ export class Staking {
       };
     }
   }
+  
   public async getClaimableRewards(): Promise<any> {
     try {
       let response = await this.contract.query("getClaimableRewards", [
@@ -215,6 +217,7 @@ export class Staking {
       return false;
     }
   }
+  
   public async getContractConfig(): Promise<any> {
     try {
       let response = await this.contract.query("getContractConfig");
@@ -270,7 +273,7 @@ export class Staking {
 
   public async withdraw(): Promise<TransactionReceipt> {
     let tx = await this.contract.invoke("withdraw", [], {
-      gasLimit: 6000000,
+      gasLimit: 12000000,
     });
     return tx;
   }
