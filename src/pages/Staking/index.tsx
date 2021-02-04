@@ -270,6 +270,12 @@ const DelegateForm = () => {
       );
       return;
     }
+    if (parseFloat(amount) > parseFloat(maxAmount) || null) {
+      toast.error(
+        `Your delegation amount is above your available balance!`
+      );
+      return;
+    }
     try {
       setSpinner(true);
       await stakingSC.delegate(amount);
