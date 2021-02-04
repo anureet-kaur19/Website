@@ -218,7 +218,7 @@ const DelegateForm = () => {
   const classes = useStyles();
   const { USD, Label } = useGlobalContext();
   const { balance, stakingSC } = useStakingContext();
-  const [amount, setAmount] = useState("10");
+  const [amount, setAmount] = useState("0");
   const [spinner, setSpinner] = useState(false);
   const [open, setOpen] = useState(false);
   const USDAmountInit = usdValue({
@@ -264,13 +264,13 @@ const DelegateForm = () => {
   };
 
   const delegate = useCallback(async () => {
-    if (parseFloat(amount) < 10 || null) {
+    if (parseFloat(amount) < 10) {
       toast.error(
         `Your delegation amount is under the minimum value of 10 ${Label}!`
       );
       return;
     }
-    if (parseFloat(amount) > parseFloat(maxAmount) || null) {
+    if (parseFloat(amount) > parseFloat(maxAmount)) {
       toast.error(
         `Your delegation amount is above your available balance!`
       );
@@ -282,7 +282,7 @@ const DelegateForm = () => {
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setAmount("10");
+      setAmount("0");
       setSpinner(false);
       setOpen(false);
     }
