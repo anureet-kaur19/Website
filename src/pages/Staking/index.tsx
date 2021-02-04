@@ -484,6 +484,10 @@ const UnDelegateForm = () => {
       toast.error(`You cannot keep under 10 ${Label} delegated! Use the Max button!`);
       return;
     }
+    if (parseFloat(amount) < 10) {
+      toast.error(`You cannot undelegate less than 10 ${Label}!`);
+      return;
+    }
     try {
       setSpinner(true);
       await stakingSC.unDelegate(amount);
@@ -535,7 +539,7 @@ const UnDelegateForm = () => {
                     }}
                     type={"number"}
                     inputProps={{
-                      min: 0,
+                      min: 10,
                       max: maxAmount,
                     }}
                     required
