@@ -20,6 +20,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { ReactComponent as Logo } from "../../assets/img/logo.svg";
 import { Link } from "react-router-dom";
 import LayersIcon from "@material-ui/icons/Layers";
+import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import TelegramIcon from "@material-ui/icons/Telegram";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import YouTubeIcon from "@material-ui/icons/YouTube";
@@ -279,6 +280,12 @@ export const mainListItems = (
         <LayersIcon />
       </ListItemIcon>
       <ListItemText primary="Staking" />
+    </ListItem>
+    <ListItem button component={Link} to={"/agency"}>
+      <ListItemIcon>
+        <StorageOutlinedIcon />
+      </ListItemIcon>
+      <ListItemText primary="Agency Stats" />
     </ListItem>
     <Divider />
     <ListSubheader inset>Follow us!</ListSubheader>

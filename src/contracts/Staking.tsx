@@ -8,7 +8,6 @@ import {
   TransactionReceipt,
   numberToHex,
 } from "elrondjs";
-import { toast } from "react-toastify";
 import { BigVal } from "bigval";
 import addresses from "./addresses";
 
@@ -92,6 +91,22 @@ export class Staking {
     }
   }
 
+  public async getTotalReward(): Promise<any> {
+    try {
+      let response =  await this.contract.query("getTotalCumulatedRewards", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+
+      const totalRewardAmount = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      return totalRewardAmount.toString();
+    } catch (error) {
+      return "0";
+    }
+  }
+  
   public async getUserUnStakedValue(): Promise<any> {
     try {
       let response = await this.contract.query("getUserUnStakedValue", [
@@ -137,66 +152,13 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.BIG_INT,
       });
-      this.getContractConfig();
-      this.getNumUsers();
-      this.getTotalActiveStake();
-      this.getNumNodes();
+
       return {
         rewardAmount: rewardBalance.toString(),
       };
     } catch (error) {
       return {
         rewardAmount: "0",
-      };
-    }
-  }
-
-  public async getTotalActiveStake(): Promise<any> {
-    try {
-      let response = await this.contract.query("getTotalActiveStake", []);
-
-      const totalStakedAmount = parseQueryResult(response, {
-        index: 0,
-        type: ContractQueryResultDataType.BIG_INT,
-      });
-      console.log("Total Staked Agency",totalStakedAmount.toString());
-    } catch (error) {
-      return {
-        totalStakedAmount: "0",
-      };
-    }
-  }
-
-  public async getNumUsers(): Promise<any> {
-    try {
-      let response = await this.contract.query("getNumUsers", []);
-
-      const totalUsers = parseQueryResult(response, {
-        index: 0,
-        type: ContractQueryResultDataType.INT,
-      });
-      console.log("Total Users", totalUsers);
-      
-    } catch (error) {
-      return {
-        totalUsers: "0",
-      };
-    }
-  }
-
-  public async getNumNodes(): Promise<any> {
-    try {
-      let response = await this.contract.query("getNumNodes", []);
-
-      const totalNodes = parseQueryResult(response, {
-        index: 0,
-        type: ContractQueryResultDataType.INT,
-      });
-      console.log("Total Nodes", totalNodes);
-      
-    } catch (error) {
-      return {
-        totalUsers: "0",
       };
     }
   }
@@ -218,37 +180,6 @@ export class Staking {
     }
   }
   
-  public async getContractConfig(): Promise<any> {
-    try {
-      let response = await this.contract.query("getContractConfig");
-      const serviceFee = parseQueryResult(response, {
-        index: 1,
-        type: ContractQueryResultDataType.INT,
-      });
-      const maxDelegationCap = parseQueryResult(response, {
-        index: 2,
-        type: ContractQueryResultDataType.BIG_INT,
-      });
-      const automaticDelegation = parseQueryResult(response, {
-        index: 4,
-        type: ContractQueryResultDataType.STRING,
-      });
-      const unboundPeriod = parseQueryResult(response, {
-        index: 8,
-        type: ContractQueryResultDataType.BIG_INT,
-      });
-      console.log("Service fee", serviceFee);
-      console.log("Max delegation Cap", maxDelegationCap.toString());
-      console.log("Unbound Period", unboundPeriod.toString());
-      console.log("Automatic Activation", automaticDelegation);
-      return {
-        rewardAmount: 0,
-      };
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }
-
   public async getUserData(): Promise<UserData> {
     const balance = await this.proxyProvider.getAddress(this.userWalletBech32);
     return balance;

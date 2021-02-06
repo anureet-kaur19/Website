@@ -8,7 +8,8 @@ export type ActionType =
   | { type: "CAP"; CAP: StateType["CAP"] }
   | { type: "change"; change: StateType["change"] }
   | { type: "VOL"; VOL: StateType["VOL"] }
-  | { type: "language"; language: StateType["LNG"] };
+  | { type: "language"; language: StateType["LNG"] }
+  | { type: "agencyInfo"; agencyInfo: StateType["agencyInfo"] };
 
 export function reducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
@@ -49,6 +50,14 @@ export function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         change,
+      };
+    }
+
+    case "agencyInfo": {
+      const { agencyInfo } = action;
+      return {
+        ...state,
+        agencyInfo,
       };
     }
 

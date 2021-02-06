@@ -5,6 +5,7 @@ export type DispatchType = (action: ActionType) => void;
 export type ActionType =
   | { type: "setBalance"; balance: StateType["balance"] }
   | { type: "setRewardBalance"; rewardBalance: StateType["rewardBalance"] }
+  | { type: "setTotalRewardBalance"; totalRewardBalance: StateType["totalRewardBalance"] }
   | {
       type: "setDelegateBalance";
       delegateBalance: StateType["delegateBalance"];
@@ -24,6 +25,14 @@ export function reducer(state: StateType, action: ActionType): StateType {
       };
     }
 
+    case "setTotalRewardBalance": {
+      const { totalRewardBalance } = action;
+      return {
+        ...state,
+        totalRewardBalance,
+      };
+    }
+  
     case "setRewardBalance": {
       const { rewardBalance } = action;
       return {

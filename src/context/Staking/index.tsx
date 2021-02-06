@@ -5,6 +5,7 @@ import { DispatchType, reducer } from "./reducer";
 import { Wallet } from "elrondjs";
 import { useContext } from "../Wallet";
 import { getItem } from "../../storage/session";
+import { useGlobalContext } from "../Global";
 
 export interface ContextType {
   children: React.ReactNode;
@@ -16,7 +17,8 @@ const Dispatch = React.createContext<DispatchType | undefined>(undefined);
 function StakingContextProvider({ children }: ContextType) {
   const [state, dispatch] = React.useReducer(reducer, initialState());
   const { stakingSC } = state;
-  const { address, wallet, provider, loggedIn } = useContext();
+  const { address, wallet, loggedIn } = useContext();
+  const { provider } = useGlobalContext();
   const [interval, setRefreshInterval] = useState<NodeJS.Timeout | undefined>(
     undefined
   );
@@ -51,6 +53,13 @@ function StakingContextProvider({ children }: ContextType) {
             rewardBalance: rewardsAvailable.rewardAmount,
           });
         }
+  
+        // const totalRewardBalance = await stakingSC.getTotalReward();
+        // dispatch({
+        //   type: "setTotalRewardBalance",
+        //   totalRewardBalance: totalRewardBalance,
+        // });
+
         const getUserUnStakedValue = await stakingSC.getUserUnStakedValue();
         if (getUserUnStakedValue.unStakedAmount) {
           dispatch({

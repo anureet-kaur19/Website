@@ -44,6 +44,7 @@ const Staking = () => {
     rewardBalance,
     unBondableBalance,
     unStakedBalance,
+    totalRewardBalance,
     isActive,
   } = useStakingContext();
   const { Label } = useGlobalContext();
@@ -93,6 +94,16 @@ const Staking = () => {
       showDecimals: true,
       className: "delegated",
       dataTestId: "delegated",
+    });
+  }
+  if (totalRewardBalance !== "0") {
+    entries.push({
+      label: "Total Cumulated Rewards",
+      value: totalRewardBalance,
+      icon: faBookOpen,
+      showDecimals: true,
+      className: "rewards",
+      dataTestId: "rewards",
     });
   }
   if (rewardBalance !== "0") {
