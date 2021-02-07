@@ -44,7 +44,7 @@ function Copyright() {
     <Typography variant="body2" color="inherit" align="center">
       {"Copyright © "}
       <RedirectTo color="inherit" href="https://truststaking.com/">
-        Trust Staking (Testing Phase)
+        Trust Staking
       </RedirectTo>{" "}
       {new Date().getFullYear()}
     </Typography>
@@ -209,7 +209,7 @@ export default function Dashboard({ children }) {
             noWrap
             className={classes.title}
           >
-            Trust Staking
+            Trust Staking (Testing Phase)
           </Typography>
           {loggedIn && (
             <IconButton
