@@ -44,7 +44,7 @@ function Copyright() {
     <Typography variant="body2" color="inherit" align="center">
       {"Copyright © "}
       <RedirectTo color="inherit" href="https://truststaking.com/">
-        Trust Staking
+        Trust Staking (Testing Phase)
       </RedirectTo>{" "}
       {new Date().getFullYear()}
     </Typography>
