@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { StateType, initialState } from "./state";
+import { StateType, initialState, AgencyDetails } from "./state";
 import { DispatchType, reducer } from "./reducer";
 import axios from 'axios';
+import denominate from "../../components/Denominate/denominate";
 
 export interface ContextType {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ const Dispatch = React.createContext<DispatchType | undefined>(undefined);
 
 function GlobalContextProvider({ children }: ContextType) {
   const [state, dispatch] = React.useReducer(reducer, initialState());
+  const { agencySC } = state;
   const [interval, setInt] = useState<NodeJS.Timeout | undefined>(undefined);
 
   const getLatestElrondData = async () => {
@@ -22,12 +24,46 @@ function GlobalContextProvider({ children }: ContextType) {
       dispatch({type: "VOL", VOL: res.data.volume_24h});
       dispatch({type: "change", change: res.data.change});
     });
+    agencySC.setProxyProvider(state.provider);
+    agencySC.initContract();
+    const numNodes = await agencySC.getNumNodes();
+    const numUsers = await agencySC.getNumUsers();
+    const config = await agencySC.getContractConfig();
+    let totalStaked = await agencySC.getTotalActiveStake();
+    totalStaked = denominate({
+      input: totalStaked,
+      denomination: 18,
+      decimals: 3,
+      showLastNonZeroDecimal: false,
+      addCommas: false,
+    });
+
+    let totalUnStaked = await agencySC.getTotalUnStake();   
+    totalUnStaked = denominate({
+      input: totalUnStaked,
+      denomination: 18,
+      decimals: 3,
+      showLastNonZeroDecimal: false,
+      addCommas: false,
+    });
+    // const totalReward = await agencySC.getTotalReward();
+    // await agencySC.getAllNodeStates();
+    let agencyInfo: AgencyDetails = {
+      fee: config.fee,
+      numNodes,
+      numUsers,
+      totalStaked,
+      totalReward: "0",
+      totalUnStaked
+    };
+    dispatch({type: "agencyInfo", agencyInfo});
+
   };
   useEffect(() => {
     const fetch = async () => {
       await getLatestElrondData();
     };
-    setInt(setInterval(async () => {await fetch()}, 10000));
+    setInt(setInterval(async () => {await fetch()}, 20000));
     fetch();
     return () => {
       clearInterval(interval as NodeJS.Timeout);

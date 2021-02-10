@@ -8,7 +8,6 @@ import {
   TransactionReceipt,
   numberToHex,
 } from "elrondjs";
-import { toast } from "react-toastify";
 import { BigVal } from "bigval";
 import addresses from "./addresses";
 
@@ -92,6 +91,22 @@ export class Staking {
     }
   }
 
+  public async getTotalReward(): Promise<any> {
+    try {
+      let response =  await this.contract.query("getTotalCumulatedRewards", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+
+      const totalRewardAmount = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      return totalRewardAmount.toString();
+    } catch (error) {
+      return "0";
+    }
+  }
+  
   public async getUserUnStakedValue(): Promise<any> {
     try {
       let response = await this.contract.query("getUserUnStakedValue", [
@@ -106,11 +121,28 @@ export class Staking {
       };
     } catch (error) {
       return {
-        unStakedAmount: "0",
       };
     }
   }
 
+  public async getUserUnBondable(): Promise<any> {
+    try {
+      let response = await this.contract.query("getUserUnBondable", [
+        addressToHexString(this.userWalletBech32),
+      ]);
+      const unBondableAmount = parseQueryResult(response, {
+        index: 0,
+        type: ContractQueryResultDataType.BIG_INT,
+      });
+      return {
+        unBondableBalance: unBondableAmount.toString(),
+      };
+    } catch (error) {
+      return {
+      };
+    }
+  }
+  
   public async getClaimableRewards(): Promise<any> {
     try {
       let response = await this.contract.query("getClaimableRewards", [
@@ -120,6 +152,7 @@ export class Staking {
         index: 0,
         type: ContractQueryResultDataType.BIG_INT,
       });
+
       return {
         rewardAmount: rewardBalance.toString(),
       };
@@ -130,64 +163,31 @@ export class Staking {
     }
   }
 
-  public async getTotalActiveStake(): Promise<any> {
+  public async isDelegator(): Promise<boolean> {
     try {
-      let response = await this.contract.query("getTotalActiveStake", []);
+      let response = await this.contract.query("isDelegator", [
+        addressToHexString(this.userWalletBech32),
+      ]);
 
-      const totalStakedAmount = parseQueryResult(response, {
+      const isDelegator = parseQueryResult(response, {
         index: 0,
-        type: ContractQueryResultDataType.BIG_INT,
+        type: ContractQueryResultDataType.BOOLEAN,
       });
-      return {
-        totalStakedAmount: totalStakedAmount.toString(),
-      };
+
+      return isDelegator as boolean;
     } catch (error) {
-      return {
-        totalStakedAmount: "0",
-      };
+      return false;
     }
   }
-
-  public async getNumUsers(): Promise<any> {
-    try {
-      let response = await this.contract.query("getNumUsers", []);
-
-      const totalUsers = parseQueryResult(response, {
-        index: 0,
-        type: ContractQueryResultDataType.INT,
-      });
-      return {
-        totalUsers: totalUsers.toString(),
-      };
-    } catch (error) {
-      return {
-        totalUsers: "0",
-      };
-    }
-  }
-  public async getContractConfig(): Promise<any> {
-    try {
-      let response = await this.contract.query("getContractConfig");
-      const rewardBalance = parseQueryResult(response, {
-        index: 0,
-        type: ContractQueryResultDataType.STRING,
-      });
-      return {
-        rewardAmount: BigInt(rewardBalance).toString(),
-      };
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }
-
+  
   public async getUserData(): Promise<UserData> {
     const balance = await this.proxyProvider.getAddress(this.userWalletBech32);
     return balance;
   }
 
-  public async delegate(amount: number): Promise<TransactionReceipt> {
+  public async delegate(amount: string): Promise<TransactionReceipt> {
     let tx = await this.contract.invoke("delegate", [], {
-      value: new BigVal(amount),
+      value: new BigVal(amount, "coins"),
       gasLimit: 12000000,
     });
 
@@ -204,9 +204,8 @@ export class Staking {
 
   public async withdraw(): Promise<TransactionReceipt> {
     let tx = await this.contract.invoke("withdraw", [], {
-      gasLimit: 6000000,
+      gasLimit: 12000000,
     });
-
     return tx;
   }
 
@@ -214,18 +213,13 @@ export class Staking {
     let tx = await this.contract.invoke("reDelegateRewards", [], {
       gasLimit: 12000000,
     });
-
     return tx;
   }
 
-  public async unDelegate(amount: number): Promise<TransactionReceipt> {
-    let tx = await this.contract.invoke(
-      "unDelegate",
-      [numberToHex(new BigVal(amount))],
-      {
-        gasLimit: 12000000,
-      }
-    );
+  public async unDelegate(amount: string): Promise<TransactionReceipt> {
+    let tx = await this.contract.invoke("unDelegate", [numberToHex(new BigVal(amount, "coins"))], {
+      gasLimit: 12000000,
+    });
     return tx;
   }
 }

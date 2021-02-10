@@ -5,6 +5,7 @@ import { DispatchType, reducer } from "./reducer";
 import { Wallet } from "elrondjs";
 import { useContext } from "../Wallet";
 import { getItem } from "../../storage/session";
+import { useGlobalContext } from "../Global";
 
 export interface ContextType {
   children: React.ReactNode;
@@ -16,7 +17,8 @@ const Dispatch = React.createContext<DispatchType | undefined>(undefined);
 function StakingContextProvider({ children }: ContextType) {
   const [state, dispatch] = React.useReducer(reducer, initialState());
   const { stakingSC } = state;
-  const { address, wallet, provider, loggedIn } = useContext();
+  const { address, wallet, loggedIn } = useContext();
+  const { provider } = useGlobalContext();
   const [interval, setRefreshInterval] = useState<NodeJS.Timeout | undefined>(
     undefined
   );
@@ -24,38 +26,59 @@ function StakingContextProvider({ children }: ContextType) {
   //@ts-ignore
   useEffect(() => {
     const fetchUserData = async () => {
-        if (getItem("logged_in") === false) {
-          if (interval !== undefined) {
-            clearInterval(interval as NodeJS.Timeout);
-            setRefreshInterval(undefined);
-          }
-          return;
+      if (getItem("logged_in") === false) {
+        if (interval !== undefined) {
+          clearInterval(interval as NodeJS.Timeout);
+          setRefreshInterval(undefined);
         }
-        stakingSC.setUserAddress(address);
-        stakingSC.setWalletSigner(wallet as Wallet);
-        stakingSC.setProxyProvider(provider);
-        stakingSC.initContract();
-        const userBalance = await stakingSC.getUserData();
-        dispatch({ type: "setBalance", balance: userBalance.balance });
-        const userDelegation = await stakingSC.getUserActiveStake();
-        dispatch({ type: "setIsActive", isActive: userDelegation.isActive });
-        if (userDelegation.isActive && userDelegation.stakeAmount) {
+        return;
+      }
+      stakingSC.setUserAddress(address);
+      stakingSC.setWalletSigner(wallet as Wallet);
+      stakingSC.setProxyProvider(provider);
+      stakingSC.initContract();
+      const userBalance = await stakingSC.getUserData();
+      dispatch({ type: "setBalance", balance: userBalance.balance });
+      const userDelegation = await stakingSC.getUserActiveStake();
+      dispatch({ type: "setIsActive", isActive: userDelegation.isActive });
+      if (userDelegation.isActive && userDelegation.stakeAmount) {
+        dispatch({
+          type: "setDelegateBalance",
+          delegateBalance: userDelegation.stakeAmount,
+        });
+        const rewardsAvailable = await stakingSC.getClaimableRewards();
+        if (rewardsAvailable) {
           dispatch({
-            type: "setDelegateBalance",
-            delegateBalance: userDelegation.stakeAmount,
+            type: "setRewardBalance",
+            rewardBalance: rewardsAvailable.rewardAmount,
           });
-          const rewardsAvailable = await stakingSC.getClaimableRewards();
-          if (rewardsAvailable) {
+        }
+  
+        // const totalRewardBalance = await stakingSC.getTotalReward();
+        // dispatch({
+        //   type: "setTotalRewardBalance",
+        //   totalRewardBalance: totalRewardBalance,
+        // });
+
+        const getUserUnStakedValue = await stakingSC.getUserUnStakedValue();
+        if (getUserUnStakedValue.unStakedAmount) {
+          dispatch({
+            type: "setUserUnStakedValue",
+            unStakedBalance: getUserUnStakedValue.unStakedAmount,
+          });
+          const getUserUnBondable = await stakingSC.getUserUnBondable()
+          if (getUserUnBondable.unBondableBalance) {
             dispatch({
-              type: "setRewardBalance",
-              rewardBalance: rewardsAvailable.rewardAmount,
+              type: "setUserUnBondable",
+              unBondableBalance: getUserUnBondable.unBondableBalance,
             });
           }
         }
+      }
     };
     if (getItem("logged_in") === true && wallet !== undefined) {
       fetchUserData();
-      const int = setInterval(() => fetchUserData(), 6000);
+      const int = setInterval(() => fetchUserData(), 10000);
       setRefreshInterval(int);
     }
     return () => {

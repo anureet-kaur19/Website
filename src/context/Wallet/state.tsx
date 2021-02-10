@@ -1,5 +1,5 @@
 import { getItem } from "../../storage/session";
-import { ProxyProvider, Wallet } from "elrondjs";
+import { Wallet } from "elrondjs";
 const CoinGecko = require('coingecko-api');
 
 export interface StateType {
@@ -7,7 +7,6 @@ export interface StateType {
   loading: boolean;
   error: string;
   loggedIn: boolean;
-  provider: ProxyProvider;
   address: string;
   loginType: string;
   denomination: number;
@@ -22,9 +21,6 @@ export const initialState = () => {
     denomination: 18,
     decimals: 2,
     wallet: undefined,
-    provider: new ProxyProvider("https://testnet-gateway.elrond.com", {
-      callOptions: { timeout: 5000 },
-    }),
     loading: false,
     error: "",
     coinGeckoClient: new CoinGecko(),

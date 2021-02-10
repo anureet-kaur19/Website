@@ -4,6 +4,7 @@ import withPageTitle from "./components/PageTitle";
 import Lottery from "./pages/Lottery";
 import Staking from "./pages/Staking";
 import Stats from "./pages/Stats";
+import Agency from "./pages/Agency";
 
 interface RouteType {
   path: string;
@@ -24,6 +25,12 @@ const routes: RouteType[] = [
     title: "Staking",
     isProtected: true,
     component: Staking
+  },
+  {
+    path: "/agency",
+    title: "Agency",
+    isProtected: false,
+    component: Agency
   },
   {
     path: "/lottery",

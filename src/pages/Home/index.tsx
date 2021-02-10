@@ -17,11 +17,12 @@ import {
 import SendIcon from "@material-ui/icons/Send";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import ScheduleIcon from "@material-ui/icons/Schedule";
-import AssetsCard from "../Staking/AssetCards";
+import AssetsCard from "../../components/Cards";
 import nominate from "../../components/Nominate";
 import StarBorderTwoToneIcon from "@material-ui/icons/StarBorderTwoTone";
 import Avatar from "@material-ui/core/Avatar";
 import { useHistory } from "react-router-dom";
+import { useGlobalContext } from "../../context/Global";
 
 const useStylesHome = makeStyles((theme: Theme) =>
   createStyles({
@@ -188,6 +189,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Calculator = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { Label } = useGlobalContext();
   const { t } = useTranslation();
   const [daily, setDaily] = useState(0);
   const [weekly, setWeekly] = useState(0);
@@ -198,53 +200,53 @@ const Calculator = () => {
   const marksBrowser = [
     {
       value: 10,
-      label: "10 eGLD",
+      label: `10 ${Label}`,
     },
     {
       value: 300,
-      label: "300 eGLD",
+      label: `300 ${Label}`,
     },
     {
       value: 650,
-      label: "650 eGLD",
+      label: `650 ${Label}`,
     },
     {
       value: 950,
-      label: "950 eGLD",
+      label: `950 ${Label}`,
     },
     {
       value: 1250,
-      label: "1250 eGLD",
+      label: `1250 ${Label}`,
     },
     {
       value: 1750,
-      label: "1750 eGLD",
+      label: `1750 ${Label}`,
     },
     {
       value: 2000,
-      label: "2000 eGLD",
+      label: `2000 ${Label}`,
     },
     {
       value: 2500,
-      label: "2500 eGLD",
+      label: `2500 ${Label}`,
     },
   ];
   const marksMobile = [
     {
       value: 10,
-      label: "10 eGLD",
+      label: `10 ${Label}`,
     },
     {
       value: 750,
-      label: "750 eGLD",
+      label: `750 ${Label}`,
     },
     {
       value: 1500,
-      label: "1500 eGLD",
+      label: `1500 ${Label}`,
     },
     {
       value: 2500,
-      label: "2500 eGLD",
+      label: `2500 ${Label}`,
     },
   ];
 
@@ -360,6 +362,7 @@ const Calculator = () => {
               <Grid item key={index} md={4} sm={6} xs={12}>
                 <AssetsCard
                   key={index}
+                  erdLabel={Label}
                   showDecimals={showDecimals}
                   className={className}
                   label={label}
